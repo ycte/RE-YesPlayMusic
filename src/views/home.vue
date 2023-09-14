@@ -1,5 +1,5 @@
 <template>
-  <div class="index-row first-row">首页</div>
+  <div class="top-title">首页</div>
   <div v-show="show" class="home">
     <!-- <div
       v-if="settings.showPlaylistsByAppleMusic !== false"
@@ -16,10 +16,10 @@
 
     <div class="index-row">
       <div class="title">
-        <!-- {{ $t("home.recommendPlaylist") }} -->
+        {{ $t("home.recommendPlaylist") }}
         <router-link to="/explore?category=推荐歌单">
-          <!-- {{ $t("home.seeMore") }} -->
-          推荐歌单
+          {{ $t("home.seeMore") }}
+          <!-- 推荐歌单 -->
         </router-link>
       </div>
       <CoverRow
@@ -34,9 +34,9 @@
         <DailyTracksCard ref="DailyTracksCard" />
         <FMCard />
       </div>
-    </div>
+    </div> -->
     <div class="index-row">
-      <div class="title">{{ $t('home.recommendArtist') }}</div>
+      <div class="title">{{ $t("home.recommendArtist") }}</div>
       <CoverRow
         type="artist"
         :column-number="6"
@@ -45,8 +45,8 @@
     </div>
     <div class="index-row">
       <div class="title">
-        {{ $t('home.newAlbum') }}
-        <router-link to="/new-album">{{ $t('home.seeMore') }}</router-link>
+        {{ $t("home.newAlbum") }}
+        <router-link to="/new-album">{{ $t("home.seeMore") }}</router-link>
       </div>
       <CoverRow
         type="album"
@@ -56,9 +56,9 @@
     </div>
     <div class="index-row">
       <div class="title">
-        {{ $t('home.charts') }}
+        {{ $t("home.charts") }}
         <router-link to="/explore?category=排行榜">{{
-          $t('home.seeMore')
+          $t("home.seeMore")
         }}</router-link>
       </div>
       <CoverRow
@@ -67,7 +67,7 @@
         sub-text="updateFrequency"
         :image-size="1024"
       />
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -178,7 +178,7 @@ export default {
 
 <style lang="scss" scoped>
 .index-row {
-  margin-top: 54px;
+  margin-top: 34px;
 }
 .index-row.first-row {
   margin-top: 32px;
@@ -201,6 +201,22 @@ export default {
   align-items: flex-end;
   margin-bottom: 20px;
   font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  a {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.68;
+    margin-right: 14%;
+  }
+}
+
+.top-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 20px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--color-text);
   a {

@@ -1,5 +1,5 @@
 <template>
-  <router-view />
+  <router-view id="root" />
 </template>
 
 <script>
@@ -50,3 +50,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+#root {
+  margin-left: 7%;
+  margin-top: 7%;
+  margin-right: 7%;
+}
+</style>

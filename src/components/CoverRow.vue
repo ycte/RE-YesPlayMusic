@@ -1,39 +1,60 @@
 <template>
-  <div class="cover-row" :style="rowStyles">
-    <div
+  <!-- <div
+    class="cover-row"
+    :style="rowStyles"
+  > -->
+  <div class="cover-row">
+    <q-virtual-scroll
+      :items="items"
+      virtual-scroll-horizontal
+      virtual-scroll-slice-size="10"
+      virtual-scroll-item-size="30"
+      v-slot="{ item, index }"
+      class="scroll"
+    >
+      <div :key="index">
+        <!-- <q-separator v-if="index === 0" vertical spaced /> -->
+
+        <div class="item" :class="{ artist: type === 'artist' }">
+          <Cover
+            :id="item.id"
+            :image-url="getImageUrl(item)"
+            :type="type"
+            :play-button-size="type === 'artist' ? 26 : playButtonSize"
+          />
+          <div class="text">
+            <!-- <div v-if="showPlayCount" class="info">
+              <span class="play-count"
+                ><svg-icon icon-class="play" />
+                hhhhh
+                {{ item.playCount | formatPlayCount }}
+              </span>
+            </div> -->
+            <div class="title" :style="{ fontSize: subTextFontSize }">
+              <!-- <span v-if="isExplicit(item)" class="explicit-symbol"
+                ><ExplicitSymbol
+              /></span>
+              <span v-if="isPrivacy(item)" class="lock-icon">
+                <svg-icon icon-class="lock"/>
+              </span> -->
+              <router-link :to="getTitleLink(item)">{{
+                item.name
+              }}</router-link>
+            </div>
+            <div v-if="type !== 'artist' && subText !== 'none'" class="info">
+              <span v-html="getSubText(item)"></span>
+            </div>
+          </div>
+        </div>
+        <!-- <q-separator vertical spaced /> -->
+      </div>
+    </q-virtual-scroll>
+    <!-- <div
       v-for="item in items"
       :key="item.id"
       class="item"
       :class="{ artist: type === 'artist' }"
-    >
-      <Cover
-        :id="item.id"
-        :image-url="getImageUrl(item)"
-        :type="type"
-        :play-button-size="type === 'artist' ? 26 : playButtonSize"
-      />
-      <div class="text">
-        <!-- <div v-if="showPlayCount" class="info">
-          <span class="play-count"
-            ><svg-icon icon-class="play" />
-            hhhhh
-            {{ item.playCount | formatPlayCount }}
-          </span>
-        </div> -->
-        <div class="title" :style="{ fontSize: subTextFontSize }">
-          <!-- <span v-if="isExplicit(item)" class="explicit-symbol"
-            ><ExplicitSymbol
-          /></span> -->
-          <span v-if="isPrivacy(item)" class="lock-icon">
-            <!-- <svg-icon icon-class="lock"/> -->
-          </span>
-          <router-link :to="getTitleLink(item)">{{ item.name }}</router-link>
-        </div>
-        <div v-if="type !== 'artist' && subText !== 'none'" class="info">
-          <span v-html="getSubText(item)"></span>
-        </div>
-      </div>
-    </div>
+    ></div> -->
   </div>
 </template>
 
@@ -119,13 +140,18 @@ export default {
 
 <style lang="scss" scoped>
 .cover-row {
-  display: grid;
+  // display: grid;
+  height: 200px;
 }
-
+// .scroll {
+//   height: 100%;
+// }
 .item {
+  width: 155px;
   color: var(--color-text);
+  // border-left: 3%;
   .text {
-    margin-top: 8px;
+    margin-top: 0px;
     .title {
       font-size: 16px;
       font-weight: 600;
