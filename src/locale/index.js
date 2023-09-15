@@ -12,7 +12,7 @@ import tr from "./lang/tr.js";
 // Vue.use(VueClipboard);
 // Vue.use(VueI18n);
 const store = useStore(pinia());
-console.log(store.settings.lang);
+// console.log(store.settings.lang);
 
 const i18n = createI18n({
   locale: store.settings.lang,

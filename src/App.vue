@@ -1,15 +1,64 @@
 <template>
   <router-view id="root" />
+  <!-- <transition name="slide-up"> -->
+  <Player v-if="enablePlayer" v-show="showPlayer" ref="player" />
+  <!-- </transition> -->
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import { isAccountLoggedIn, isLooseLoggedIn } from "src/utils/auth";
-import { mapActions } from "pinia";
-import { useStore } from "src/stores/store";
+import { mapActions, mapState } from "pinia";
+import pinia from "src/stores";
+import useStore from "src/stores/store";
+import Player from "src/components/Player.vue";
+// const store = useStore(pinia());
+// console.log(useStore());
 
 export default defineComponent({
   name: "App",
+  components: {
+    Player,
+  },
+  data() {
+    return {
+      // isElectron: process.env.IS_ELECTRON, // true || undefined
+      userSelectNone: false,
+    };
+  },
+  computed: {
+    ...mapState(useStore, {
+      showLyrics: "showLyrics",
+      settings: "settings",
+      player: "player",
+      enableScrolling: "enableScrolling",
+    }),
+    isAccountLoggedIn() {
+      return isAccountLoggedIn();
+    },
+    showPlayer() {
+      return (
+        // [
+        //   "mv",
+        //   "loginUsername",
+        //   "login",
+        //   "loginAccount",
+        //   "lastfmCallback",
+        // ].includes(this.$route.name) === false
+        true
+      );
+    },
+    enablePlayer() {
+      // console.log(useStore);
+      // console.log("enablePlayer", this.player);
+      // console.log("enablePlayer", this.player.enabled);
+      // console.log("this.$route", this.$route.name);
+      return this.player.enabled && this.$route.name !== "lastfmCallback";
+    },
+    showNavbar() {
+      return this.$route.name !== "lastfmCallback";
+    },
+  },
   created() {
     // if (this.isElectron) ipcRenderer(this);
     window.addEventListener("keydown", this.handleKeydown);

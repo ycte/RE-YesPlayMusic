@@ -143,9 +143,9 @@ export default {
   // display: grid;
   height: 200px;
 }
-// .scroll {
-//   height: 100%;
-// }
+.scroll {
+  height: 100%;
+}
 .item {
   width: 155px;
   color: var(--color-text);

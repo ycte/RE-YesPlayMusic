@@ -8,6 +8,13 @@ import {
 import { isAccountLoggedIn } from "src/utils/auth";
 
 export function hasListSource() {
+  console.log(
+    "hasListSource",
+    state,
+    state.player,
+    state.player.playlistSource,
+    state.player.isPersonalFM
+  );
   return !state.player.isPersonalFM && state.player.playlistSource.id !== 0;
 }
 

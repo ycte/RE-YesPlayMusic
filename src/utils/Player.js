@@ -4,7 +4,9 @@ import { trackScrobble, trackUpdateNowPlaying } from "src/api/lastfm";
 import { fmTrash, personalFM } from "src/api/others";
 import { getPlaylistDetail, intelligencePlaylist } from "src/api/playlist";
 import { getLyric, getMP3, getTrackDetail, scrobble } from "src/api/track";
-import store from "src/stores/store";
+import { useStore } from "src/stores/store";
+import pinia from "src/stores";
+
 import { isAccountLoggedIn } from "src/utils/auth";
 import { cacheTrackSource, getTrackSource } from "src/utils/db";
 import { isCreateMpris, isCreateTray } from "src/utils/platform";
@@ -12,6 +14,7 @@ import { Howl, Howler } from "howler";
 import shuffle from "lodash/shuffle";
 import { decode as base642Buffer } from "src/utils/base64";
 
+var store;
 const PLAY_PAUSE_FADE_DURATION = 200;
 
 const INDEX_IN_PLAY_NEXT = -1;
@@ -48,7 +51,7 @@ function setTitle(track) {
   if (isCreateTray) {
     ipcRenderer?.send("updateTrayTooltip", document.title);
   }
-  store.commit("updateTitle", document.title);
+  store.updateTitle(document.title);
 }
 
 function setTrayLikeState(isLiked) {
@@ -60,6 +63,7 @@ function setTrayLikeState(isLiked) {
 export default class {
   constructor() {
     // 播放器状态
+    store = useStore(pinia());
     this._playing = false; // 是否正在播放中
     this._progress = 0; // 当前播放歌曲的进度
     this._enabled = false; // 是否启用Player
@@ -207,7 +211,7 @@ export default class {
     }
   }
   get isCurrentTrackLiked() {
-    return store.state.liked.songs.includes(this.currentTrack.id);
+    return store.liked.songs.includes(this.currentTrack.id);
   }
 
   _init() {
@@ -313,7 +317,7 @@ export default class {
       time,
     });
     if (
-      store.state.lastfm.key !== undefined &&
+      store.lastfm.key !== undefined &&
       (time >= trackDuration / 2 || time >= 240)
     ) {
       const timestamp = ~~(new Date().getTime() / 1000) - time;
@@ -345,7 +349,7 @@ export default class {
         this._playNextTrack(this._isPersonalFM);
       } else if (errCode === 4) {
         // code 4: MEDIA_ERR_SRC_NOT_SUPPORTED
-        store.dispatch("showToast", `无法播放: 不支持的音频格式`);
+        store.showToast(`无法播放: 不支持的音频格式`);
         this._playNextTrack(this._isPersonalFM);
       } else {
         const t = this.progress;
@@ -366,7 +370,7 @@ export default class {
       if (this._currentTrack.name) {
         setTitle(this._currentTrack);
       }
-      setTrayLikeState(store.state.liked.songs.includes(this.currentTrack.id));
+      setTrayLikeState(store.liked.songs.includes(this.currentTrack.id));
     }
     this.setOutputDevice();
   }
@@ -400,7 +404,7 @@ export default class {
         if (!result.data[0].url) return null;
         if (result.data[0].freeTrialInfo !== null) return null; // 跳过只能试听的歌曲
         const source = result.data[0].url.replace(/^http:/, "https:");
-        if (store.state.settings.automaticallyCacheSongs) {
+        if (store.settings.automaticallyCacheSongs) {
           cacheTrackSource(track, source, result.data[0].br);
         }
         return source;
@@ -416,7 +420,7 @@ export default class {
 
     if (
       process.env.IS_ELECTRON !== true ||
-      store.state.settings.enableUnblockNeteaseMusic === false
+      store.settings.enableUnblockNeteaseMusic === false
     ) {
       return null;
     }
@@ -443,21 +447,21 @@ export default class {
 
     const retrieveSongInfo = await ipcRenderer.invoke(
       "unblock-music",
-      store.state.settings.unmSource,
+      store.settings.unmSource,
       track,
       {
-        enableFlac: store.state.settings.unmEnableFlac || null,
-        proxyUri: store.state.settings.unmProxyUri || null,
-        searchMode: determineSearchMode(store.state.settings.unmSearchMode),
+        enableFlac: store.settings.unmEnableFlac || null,
+        proxyUri: store.settings.unmProxyUri || null,
+        searchMode: determineSearchMode(store.settings.unmSearchMode),
         config: {
-          "joox:cookie": store.state.settings.unmJooxCookie || null,
-          "qq:cookie": store.state.settings.unmQQCookie || null,
-          "ytdl:exe": store.state.settings.unmYtDlExe || null,
+          "joox:cookie": store.settings.unmJooxCookie || null,
+          "qq:cookie": store.settings.unmQQCookie || null,
+          "ytdl:exe": store.settings.unmYtDlExe || null,
         },
       }
     );
 
-    if (store.state.settings.automaticallyCacheSongs && retrieveSongInfo?.url) {
+    if (store.settings.automaticallyCacheSongs && retrieveSongInfo?.url) {
       // 对于来自 bilibili 的音源
       // retrieveSongInfo.url 是音频数据的base64编码
       // 其他音源为实际url
@@ -529,7 +533,7 @@ export default class {
         }
         return replaced;
       } else {
-        store.dispatch("showToast", `无法播放 ${track.name}`);
+        store.showToast(`无法播放 ${track.name}`);
         switch (ifUnplayableThen) {
           case UNPLAYABLE_CONDITION.PLAY_NEXT_TRACK:
             this._playNextTrack(this.isPersonalFM);
@@ -538,8 +542,7 @@ export default class {
             this.playPrevTrack();
             break;
           default:
-            store.dispatch(
-              "showToast",
+            store.showToast(
               `undefined Unplayable condition: ${ifUnplayableThen}`
             );
             break;
@@ -630,7 +633,7 @@ export default class {
   }
   // OSDLyrics 会检测 Mpris 状态并寻找对应歌词文件，所以要在更新 Mpris 状态之前保证歌词下载完成
   async _updateMprisState(track, metadata) {
-    if (!store.state.settings.enableOsdlyricsSupport) {
+    if (!store.settings.enableOsdlyricsSupport) {
       return ipcRenderer?.send("metadata", metadata);
     }
 
@@ -694,7 +697,7 @@ export default class {
   _playDiscordPresence(track, seekTime = 0) {
     if (
       process.env.IS_ELECTRON !== true ||
-      store.state.settings.enableDiscordRichPresence === false
+      store.settings.enableDiscordRichPresence === false
     ) {
       return null;
     }
@@ -705,7 +708,7 @@ export default class {
   _pauseDiscordPresence(track) {
     if (
       process.env.IS_ELECTRON !== true ||
-      store.state.settings.enableDiscordRichPresence === false
+      store.settings.enableDiscordRichPresence === false
     ) {
       return null;
     }
@@ -753,7 +756,7 @@ export default class {
         result = await personalFM().catch(() => null);
         if (!result) {
           this._personalFMLoading = false;
-          store.dispatch("showToast", "personal fm timeout");
+          store.showToast("personal fm timeout");
           return false;
         }
         if (result.data?.length > 0) {
@@ -766,7 +769,7 @@ export default class {
 
       if (retryCount < 0) {
         let content = "获取私人FM数据时重试次数过多，请手动切换下一首";
-        store.dispatch("showToast", content);
+        store.showToast(content);
         console.log(content);
         return false;
       }
@@ -828,7 +831,7 @@ export default class {
         setTitle(this._currentTrack);
       }
       this._playDiscordPresence(this._currentTrack, this.seek());
-      if (store.state.lastfm.key !== undefined) {
+      if (store.lastfm.key !== undefined) {
         trackUpdateNowPlaying({
           artist: this.currentTrack.ar[0].name,
           track: this.currentTrack.name,
@@ -869,7 +872,7 @@ export default class {
     if (this._howler?._sounds.length <= 0 || !this._howler?._sounds[0]._node) {
       return;
     }
-    this._howler?._sounds[0]._node.setSinkId(store.state.settings.outputDevice);
+    this._howler?._sounds[0]._node.setSinkId(store.settings.outputDevice);
   }
 
   replacePlaylist(
@@ -958,7 +961,7 @@ export default class {
 
   sendSelfToIpcMain() {
     if (process.env.IS_ELECTRON !== true) return false;
-    let liked = store.state.liked.songs.includes(this.currentTrack.id);
+    let liked = store.liked.songs.includes(this.currentTrack.id);
     ipcRenderer?.send("player", {
       playing: this.playing,
       likedCurrentTrack: liked,

@@ -51,6 +51,8 @@
 </template>
 
 <script>
+import { useStore } from "src/stores/store.js";
+import { mapWritableState } from "pinia";
 export default {
   name: "aCover",
   props: {
@@ -72,6 +74,7 @@ export default {
     };
   },
   computed: {
+    ...mapWritableState(useStore, ["player"]),
     imageStyles() {
       let styles = {};
       if (this.fixedSize !== 0) {
@@ -96,13 +99,16 @@ export default {
   },
   methods: {
     play() {
-      const player = this.$store.state.player;
+      console.log("play", this.player);
+      const player = this.player;
+      // console.log(player.playAlbumByID);
       const playActions = {
         album: player.playAlbumByID,
         playlist: player.playPlaylistByID,
         artist: player.playArtistByID,
       };
       playActions[this.type].bind(player)(this.id);
+      console.log("playing", this.player);
     },
     goTo() {
       this.$router.push({ name: this.type, params: { id: this.id } });

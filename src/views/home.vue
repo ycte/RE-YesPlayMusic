@@ -116,8 +116,8 @@ export default {
     // },
   },
   created() {
-    console.log("HomeView activated");
-    console.log(process.env);
+    // console.log("HomeView activated");
+    // console.log(process.env);
     // console.log(this.settings);
     this.loadData();
     // console.log(this.recommendPlaylist);
