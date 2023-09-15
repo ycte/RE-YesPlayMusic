@@ -1,4 +1,6 @@
-import store from "src/stores/store";
+import useStore from "src/stores/store";
+import pinia from "src/stores";
+// var store = useStore(pinia);
 import request from "src/utils/request";
 import { mapTrackPlayableStatus } from "src/utils/common";
 import {
@@ -17,7 +19,8 @@ import {
 export function getMP3(id) {
   const getBr = () => {
     // 当返回的 quality >= 400000时，就会优先返回 hi-res
-    const quality = store.state.settings?.musicQuality ?? "320000";
+    var store = useStore(pinia);
+    const quality = store.settings?.musicQuality ?? "320000";
     return quality === "flac" ? "350000" : quality;
   };
 

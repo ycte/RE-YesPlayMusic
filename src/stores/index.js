@@ -3,7 +3,7 @@ import { createPinia } from "pinia";
 // 插件
 import { getSendSettingsPlugin } from "./plugins/sendSettings";
 import saveToLocalStorage from "./plugins/localStorage";
-
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -24,6 +24,6 @@ export default store((/* { ssrContext } */) => {
 
   // You can add Pinia plugins here
   // pinia.use(SomePiniaPlugin)
-
+  // pinia.use(piniaPluginPersistedstate);
   return pinia;
 });

@@ -4,9 +4,11 @@ import mutations from "./mutations";
 import actions from "./actions";
 import { changeAppearance } from "src/utils/common";
 import Player from "src/utils/Player";
-
+import { toRaw } from "vue";
 import App from "src/App.vue";
 import pinia from "src/stores";
+
+import { ref } from "vue";
 
 // actions need
 import { isAccountLoggedIn, isLooseLoggedIn } from "src/utils/auth";
@@ -27,8 +29,18 @@ import {
 export const useStore = defineStore("store", {
   state: () => ({
     ...state,
+    yunxi: {
+      isLogin: () => {
+        true;
+      },
+      isLooseLogin: () => {
+        true;
+      },
+    },
   }),
-  getters: {},
+  getters: {
+    getPlayer: (state) => state.player,
+  },
   actions: {
     // ...action,
     updateToast(toast) {
@@ -327,24 +339,41 @@ window
   });
 
 let player = new Player();
+// console.log(Object.keys(player));
+// for (let key in player) {
+//   console.log(key[0]);
+//   if (key[0] == "_") {
+//     console.log(key);
+//     player[key.substr(1)] = player[key];
+//   }
+// }
 // console.log(player);
-player = new Proxy(player, {
-  get(target, prop) {
-    console.log("proxy", prop, target[prop]);
-    return target[prop];
-  },
+// console.log("localStorage", localStorage.getItem("player"));
+player.value = new Proxy(player, {
+  // get(target, prop) {
+  //   // console.log("proxy", prop, target["_" + prop]);
+  //   return target["_" + prop];
+  // },
   set(target, prop, val) {
-    console.log("proxy", { prop, val });
+    // console.log("proxy", { prop, val });
     target[prop] = val;
 
     if (prop === "_howler") return true;
-    console.log("Player preparing to save");
+    // console.log("Player preparing to save");
     target.saveSelfToLocalStorage();
     target.sendSelfToIpcMain();
     return true;
   },
 });
 
-store.player = player;
-
+console.log(player);
+store.$patch({
+  player: {
+    player: player,
+  },
+});
+// store.player = {
+//   player: player,
+// };
+// console.log(toRaw(store.player));
 export default useStore;

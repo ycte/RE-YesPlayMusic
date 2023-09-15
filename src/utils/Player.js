@@ -64,6 +64,7 @@ export default class {
   constructor() {
     // 播放器状态
     store = useStore(pinia());
+    console.log("player init");
     this._playing = false; // 是否正在播放中
     this._progress = 0; // 当前播放歌曲的进度
     this._enabled = false; // 是否启用Player

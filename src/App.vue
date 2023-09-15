@@ -37,23 +37,36 @@ export default defineComponent({
       return isAccountLoggedIn();
     },
     showPlayer() {
+      console.log(
+        "showPlayer",
+        [
+          "mv",
+          "loginUsername",
+          "login",
+          "loginAccount",
+          "lastfmCallback",
+        ].includes(this.$route.name) === false
+      );
       return (
-        // [
-        //   "mv",
-        //   "loginUsername",
-        //   "login",
-        //   "loginAccount",
-        //   "lastfmCallback",
-        // ].includes(this.$route.name) === false
-        true
+        [
+          "mv",
+          "loginUsername",
+          "login",
+          "loginAccount",
+          "lastfmCallback",
+        ].includes(this.$route.name) === false
       );
     },
     enablePlayer() {
       // console.log(useStore);
-      // console.log("enablePlayer", this.player);
-      // console.log("enablePlayer", this.player.enabled);
-      // console.log("this.$route", this.$route.name);
-      return this.player.enabled && this.$route.name !== "lastfmCallback";
+      const store = useStore();
+      console.log("enablePlayer", store.player.player);
+      console.log("enablePlayer", this.player.player);
+      console.log("this.player.enabled", this.player.player.enabled);
+      console.log("this.$route", this.$route.name !== "lastfmCallback");
+      return (
+        this.player.player.enabled && this.$route.name !== "lastfmCallback"
+      );
     },
     showNavbar() {
       return this.$route.name !== "lastfmCallback";

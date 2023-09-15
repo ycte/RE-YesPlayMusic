@@ -204,21 +204,21 @@ export default {
   computed: {
     ...mapState(useStore, ["player", "settings", "data"]),
     currentTrack() {
-      return this.player.currentTrack;
+      return this.player.player.currentTrack;
     },
     volume: {
       get() {
-        return this.player.volume;
+        return this.player.player.volume;
       },
       set(value) {
-        this.player.volume = value;
+        this.player.player.volume = value;
       },
     },
     playing() {
-      return this.player.playing;
+      return this.player.player.playing;
     },
     audioSource() {
-      return this.player._howler?._src.includes("kuwo.cn")
+      return this.player.player._howler?._src.includes("kuwo.cn")
         ? "音源来自酷我音乐"
         : "";
     },
@@ -227,20 +227,20 @@ export default {
     // ...mapMutations(["toggleLyrics"]),
     ...mapActions(useStore, ["showToast", "likeATrack"]),
     playPrevTrack() {
-      this.player.playPrevTrack();
+      this.player.player.playPrevTrack();
     },
     playOrPause() {
-      this.player.playOrPause();
+      this.player.player.playOrPause();
     },
     playNextTrack() {
-      if (this.player.isPersonalFM) {
-        this.player.playNextFMTrack();
+      if (this.player.player.isPersonalFM) {
+        this.player.player.playNextFMTrack();
       } else {
-        this.player.playNextTrack();
+        this.player.player.playNextTrack();
       }
     },
     goToNextTracksPage() {
-      if (this.player.isPersonalFM) return;
+      if (this.player.player.isPersonalFM) return;
       this.$route.name === "next"
         ? this.$router.go(-1)
         : this.$router.push({ name: "next" });
@@ -255,26 +255,28 @@ export default {
       goToListSource();
     },
     goToAlbum() {
-      if (this.player.currentTrack.al.id === 0) return;
-      this.$router.push({ path: "/album/" + this.player.currentTrack.al.id });
+      if (this.player.player.currentTrack.al.id === 0) return;
+      this.$router.push({
+        path: "/album/" + this.player.player.currentTrack.al.id,
+      });
     },
     goToArtist(id) {
       this.$router.push({ path: "/artist/" + id });
     },
     moveToFMTrash() {
-      this.player.moveToFMTrash();
+      this.player.player.moveToFMTrash();
     },
     switchRepeatMode() {
-      this.player.switchRepeatMode();
+      this.player.player.switchRepeatMode();
     },
     switchShuffle() {
-      this.player.switchShuffle();
+      this.player.player.switchShuffle();
     },
     switchReversed() {
-      this.player.switchReversed();
+      this.player.player.switchReversed();
     },
     mute() {
-      this.player.mute();
+      this.player.player.mute();
     },
   },
 };

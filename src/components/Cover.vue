@@ -52,7 +52,8 @@
 
 <script>
 import { useStore } from "src/stores/store.js";
-import { mapWritableState } from "pinia";
+import { mapWritableState, mapState } from "pinia";
+import pinia from "src/stores";
 export default {
   name: "aCover",
   props: {
@@ -74,7 +75,7 @@ export default {
     };
   },
   computed: {
-    ...mapWritableState(useStore, ["player"]),
+    ...mapState(useStore, ["player"]),
     imageStyles() {
       let styles = {};
       if (this.fixedSize !== 0) {
@@ -99,16 +100,19 @@ export default {
   },
   methods: {
     play() {
-      console.log("play", this.player);
-      const player = this.player;
+      const store = useStore(pinia());
+      // console.log(store.player);
+      // console.log("play", this.player);
+      const player = this.player.player;
       // console.log(player.playAlbumByID);
       const playActions = {
         album: player.playAlbumByID,
         playlist: player.playPlaylistByID,
         artist: player.playArtistByID,
       };
+      console.log(playActions);
       playActions[this.type].bind(player)(this.id);
-      console.log("playing", this.player);
+      // console.log("playing", this.player);
     },
     goTo() {
       this.$router.push({ name: this.type, params: { id: this.id } });

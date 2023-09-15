@@ -12,10 +12,13 @@ export function hasListSource() {
     "hasListSource",
     state,
     state.player,
-    state.player.playlistSource,
-    state.player.isPersonalFM
+    state.player.player.playlistSource,
+    state.player.player.isPersonalFM
   );
-  return !state.player.isPersonalFM && state.player.playlistSource.id !== 0;
+  return (
+    !state.player.player.isPersonalFM &&
+    state.player.player.playlistSource.id !== 0
+  );
 }
 
 export function goToListSource() {

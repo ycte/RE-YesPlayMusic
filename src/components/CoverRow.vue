@@ -141,7 +141,7 @@ export default {
 <style lang="scss" scoped>
 .cover-row {
   // display: grid;
-  height: 200px;
+  height: 230px;
 }
 .scroll {
   height: 100%;
