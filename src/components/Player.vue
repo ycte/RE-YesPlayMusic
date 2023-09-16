@@ -25,11 +25,11 @@
     <div class="controls">
       <div class="playing">
         <div class="container" @click.stop>
-          <!-- <img
-            :src="currentTrack.al && currentTrack.al.picUrl | resizeImage(224)"
+          <img
+            :src="currentTrack.al && currentTrack.al.picUrl"
             loading="lazy"
             @click="goToAlbum"
-          /> -->
+          />
           <div class="track-info" :title="audioSource">
             <div
               :class="['name', { 'has-list': hasList() }]"
@@ -48,39 +48,39 @@
               </span>
             </div>
           </div>
-          <!-- <div class="like-button">
+          <div class="like-button">
             <button-icon
               :title="
-                player.isCurrentTrackLiked
+                player.player.isCurrentTrackLiked
                   ? $t('player.unlike')
                   : $t('player.like')
               "
-              @click="likeATrack(player.currentTrack.id)"
+              @click="likeATrack(player.player.currentTrack.id)"
             >
-              <svg-icon
-                v-show="!player.isCurrentTrackLiked"
-                icon-class="heart"
-              ></svg-icon>
-              <svg-icon
-                v-show="player.isCurrentTrackLiked"
-                icon-class="heart-solid"
-              ></svg-icon>
+              <q-icon
+                name="svguse:icons.svg#heart"
+                v-show="!player.player.isCurrentTrackLiked"
+              />
+              <q-icon
+                name="svguse:icons.svg#heart-solid"
+                v-show="player.player.isCurrentTrackLiked"
+              />
             </button-icon>
-          </div> -->
+          </div>
         </div>
         <div class="blank"></div>
       </div>
       <div class="middle-control-buttons">
         <div class="blank"></div>
         <div class="container" @click.stop>
-          <button-icon
+          <!-- <button-icon
             v-show="!player.isPersonalFM"
             :title="$t('player.previous')"
             @click="playPrevTrack"
           >
-            <!-- <svg-icon icon-class="previous" /> -->
-            previous
-          </button-icon>
+            <q-icon name="svguse:pervious.svg#" class="svg-icon"></q-icon>
+
+          </button-icon> -->
           <!-- <button-icon
             v-show="player.isPersonalFM"
             title="不喜欢"
@@ -92,20 +92,29 @@
             :title="$t(player.playing ? 'player.pause' : 'player.play')"
             @click="playOrPause"
           >
+            <q-icon
+              :name="ionPause"
+              v-show="player.player.playing"
+              class="svg-icon"
+            ></q-icon>
+            <q-icon
+              :name="ionCaretForwardOutline"
+              v-show="!player.player.playing"
+              class="svg-icon"
+            ></q-icon>
             <!-- <svg-icon :icon-class="player.playing ? 'pause' : 'play'" /> -->
-            play
+            <!-- go -->
           </button-icon>
           <button-icon :title="$t('player.next')" @click="playNextTrack">
-            <!-- <svg-icon icon-class="next" /> -->
-            next
+            <q-icon :name="ionPlayForward" class="svg-icon"></q-icon>
           </button-icon>
         </div>
-        <div class="blank"></div>
+        <!-- <div class="blank"></div> -->
       </div>
-      <div class="right-control-buttons">
+      <!-- <div class="right-control-buttons">
         <div class="blank"></div>
         <div class="container" @click.stop>
-          <!-- <button-icon
+          <button-icon
             :title="$t('player.nextUp')"
             :class="{
               active: $route.name === 'next',
@@ -113,8 +122,8 @@
             }"
             @click="goToNextTracksPage"
             ><svg-icon icon-class="list"
-          /></button-icon> -->
-          <!-- <button-icon
+          /></button-icon>
+          <button-icon
             :class="{
               active: player.repeatMode !== 'off',
               disabled: player.isPersonalFM,
@@ -134,21 +143,21 @@
               v-show="player.repeatMode === 'one'"
               icon-class="repeat-1"
             />
-          </button-icon> -->
-          <!-- <button-icon
+          </button-icon>
+          <button-icon
             :class="{ active: player.shuffle, disabled: player.isPersonalFM }"
             :title="$t('player.shuffle')"
             @click="switchShuffle"
             ><svg-icon icon-class="shuffle"
-          /></button-icon> -->
-          <!-- <button-icon
+          /></button-icon>
+          <button-icon
             v-if="settings.enableReversedMode"
             :class="{ active: player.reversed, disabled: player.isPersonalFM }"
             :title="$t('player.reversed')"
             @click="switchReversed"
             ><svg-icon icon-class="sort-up"
-          /></button-icon> -->
-          <!-- <div class="volume-control">
+          /></button-icon>
+          <div class="volume-control">
             <button-icon :title="$t('player.mute')" @click="mute">
               <svg-icon v-show="volume > 0.5" icon-class="volume" />
               <svg-icon v-show="volume === 0" icon-class="volume-mute" />
@@ -169,17 +178,17 @@
                 :dot-size="12"
               ></vue-slider>
             </div>
-          </div> -->
+          </div>
 
-          <!-- <button-icon
+          <button-icon
             class="lyrics-button"
             title="歌词"
             style="margin-left: 12px"
             @click="toggleLyrics"
             ><svg-icon icon-class="arrow-up"
-          /></button-icon> -->
+          /></button-icon>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -194,12 +203,30 @@ import ButtonIcon from "src/components/ButtonIcon.vue";
 // import VueSlider from "vue-slider-component";
 import { goToListSource, hasListSource } from "src/utils/playList";
 import { formatTrackTime } from "src/utils/common";
+import {
+  ionPlay,
+  ionPause,
+  ionCaretForwardOutline,
+  ionChevronForwardOutline,
+  ionPlaySkipForwardOutline,
+  ionPlayForward,
+} from "@quasar/extras/ionicons-v7";
 
 export default {
   name: "PlayerView",
   components: {
     ButtonIcon,
     // VueSlider,
+  },
+  data() {
+    return {
+      ionPlay,
+      ionPause,
+      ionCaretForwardOutline,
+      ionChevronForwardOutline,
+      ionPlaySkipForwardOutline,
+      ionPlayForward,
+    };
   },
   computed: {
     ...mapState(useStore, ["player", "settings", "data"]),
@@ -230,6 +257,11 @@ export default {
       this.player.player.playPrevTrack();
     },
     playOrPause() {
+      // console.log(
+      //   "playOrPause",
+      //   this.currentTrack,
+      //   this.currentTrack.al && this.currentTrack.al.picUrl
+      // );
       this.player.player.playOrPause();
     },
     playNextTrack() {
@@ -291,10 +323,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 64px;
+  height: 60px;
   backdrop-filter: saturate(180%) blur(30px);
   // background-color: rgba(255, 255, 255, 0.86);
   background-color: var(--color-navbar-bg);
+  border-radius: 15px;
+  margin-left: 3%;
+  margin-right: 3%;
+  margin-bottom: 12px;
   z-index: 100;
 }
 
@@ -312,18 +348,20 @@ export default {
 
 .controls {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  // grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 7fr 3fr;
+  // grid-template-columns: repeat(autofill, minmax(10px, 1fr));
   height: 100%;
-  padding: {
-    right: 10vw;
-    left: 10vw;
-  }
+  // padding: {
+  //   right: 1vw;
+  //   left: 1vw;
+  // }
 }
 
 @media (max-width: 375px) {
-  .controls {
-    padding: 0 5vw;
-  }
+  // .controls {
+  //   padding: 0 5vw;
+  // }
 }
 
 .blank {
@@ -336,20 +374,24 @@ export default {
 
 .playing .container {
   display: flex;
+  margin-top: 6px;
+  margin-left: 8px;
   align-items: center;
   img {
     height: 46px;
-    border-radius: 5px;
+    width: 46px;
+    border-radius: 10px;
     box-shadow: 0 6px 8px -2px rgba(0, 0, 0, 0.16);
     cursor: pointer;
     user-select: none;
   }
   .track-info {
     height: 46px;
+    // width: 100px;
     margin-left: 12px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     .name {
       font-weight: 600;
       font-size: 16px;
@@ -385,6 +427,9 @@ export default {
       }
     }
   }
+  .like-button {
+    margin-left: 12px;
+  }
 }
 
 .middle-control-buttons {
@@ -392,13 +437,22 @@ export default {
 }
 
 .middle-control-buttons .container {
-  flex: 1;
+  // flex: 1;
   display: flex;
-  justify-content: center;
+  margin-top: 6px;
+  justify-content: flex-end;
   align-items: center;
   padding: 0 8px;
   .button-icon {
-    margin: 0 8px;
+    // margin: 0 8px;
+    q-icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  .svg-icon {
+    width: 24px;
+    height: 24px;
   }
   .play {
     height: 42px;
@@ -410,37 +464,33 @@ export default {
   }
 }
 
-.right-control-buttons {
-  display: flex;
-}
+// .right-control-buttons {
+//   display: flex;
+// }
 
-.right-control-buttons .container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  .expand {
-    margin-left: 24px;
-    .svg-icon {
-      height: 24px;
-      width: 24px;
-    }
-  }
-  .active .svg-icon {
-    color: var(--color-primary);
-  }
-  .volume-control {
-    margin-left: 4px;
-    display: flex;
-    align-items: center;
-    .volume-bar {
-      width: 84px;
-    }
-  }
-}
-
-.like-button {
-  margin-left: 16px;
-}
+// .right-control-buttons .container {
+//   display: flex;
+//   justify-content: flex-end;
+//   align-items: center;
+//   .expand {
+//     margin-left: 24px;
+//     .svg-icon {
+//       height: 24px;
+//       width: 24px;
+//     }
+//   }
+//   .active .svg-icon {
+//     color: var(--color-primary);
+//   }
+//   .volume-control {
+//     margin-left: 4px;
+//     display: flex;
+//     align-items: center;
+//     .volume-bar {
+//       width: 84px;
+//     }
+//   }
+// }
 
 .button-icon.disabled {
   cursor: default;

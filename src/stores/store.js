@@ -44,12 +44,14 @@ export const useStore = defineStore("store", {
   actions: {
     // ...action,
     updateToast(toast) {
+      console.log(toast);
       this.toast = toast;
     },
     async showToast(text) {
       if (this.toast.timer !== null) {
         clearTimeout(this.toast.timer);
         // commit("updateToast", { show: false, text: "", timer: null });
+
         this.updateToast({ show: false, text: "", timer: null });
       }
       this.updateToast({
@@ -366,7 +368,7 @@ player.value = new Proxy(player, {
   },
 });
 
-console.log(player);
+// console.log(player);
 store.$patch({
   player: {
     player: player,

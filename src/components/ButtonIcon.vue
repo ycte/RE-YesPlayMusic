@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'ButtonIcon',
+  name: "ButtonIcon",
 };
 </script>
 
@@ -16,10 +16,12 @@ button {
   padding: 8px;
   background: transparent;
   margin: 4px;
+  border: none;
   border-radius: 25%;
   transition: 0.2s;
   .svg-icon {
-    color: var(--color-text);
+    // color: var(--color-text);
+    color: black;
     height: 16px;
     width: 16px;
   }
@@ -27,7 +29,8 @@ button {
     margin-left: 0;
   }
   &:hover {
-    background: var(--color-secondary-bg-for-transparent);
+    // background: var(--color-secondary-bg-for-transparent);
+    background: rgba($color: #d0d0d0, $alpha: 1);
   }
   &:active {
     transform: scale(0.92);

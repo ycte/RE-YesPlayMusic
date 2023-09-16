@@ -60,10 +60,10 @@ export default defineComponent({
     enablePlayer() {
       // console.log(useStore);
       const store = useStore();
-      console.log("enablePlayer", store.player.player);
-      console.log("enablePlayer", this.player.player);
-      console.log("this.player.enabled", this.player.player.enabled);
-      console.log("this.$route", this.$route.name !== "lastfmCallback");
+      // console.log("enablePlayer", store.player.player);
+      // console.log("enablePlayer", this.player.player);
+      // console.log("this.player.enabled", this.player.player.enabled);
+      // console.log("this.$route", this.$route.name !== "lastfmCallback");
       return (
         this.player.player.enabled && this.$route.name !== "lastfmCallback"
       );
@@ -115,8 +115,8 @@ export default defineComponent({
 
 <style>
 #root {
-  margin-left: 7%;
+  margin-left: 5%;
   margin-top: 7%;
-  margin-right: 7%;
+  margin-right: 5%;
 }
 </style>
