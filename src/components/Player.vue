@@ -330,7 +330,7 @@ export default {
   border-radius: 15px;
   margin-left: 3%;
   margin-right: 3%;
-  margin-bottom: 12px;
+  margin-bottom: 56px;
   z-index: 100;
 }
 

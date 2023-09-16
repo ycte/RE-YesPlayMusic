@@ -40,28 +40,16 @@
     </q-drawer> -->
 
     <q-page-container>
+      <Navbar />
       <router-view />
     </q-page-container>
-    <div class="navigation-links">
-      <router-link to="/" :class="{ active: $route.name === 'home' }">
-        <!-- {{ $t("nav.home") }} -->
-        首页
-      </router-link>
-      <router-link to="/explore" :class="{ active: $route.name === 'explore' }">
-        <!-- {{ $t("nav.explore") }} -->
-        发现
-      </router-link>
-      <!-- <router-link to="/library" :class="{ active: $route.name === 'library' }">
-        {{ $t("nav.library") }}
-        音乐库
-      </router-link> -->
-    </div>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 // import EssentialLink from "components/EssentialLink.vue";
+import Navbar from "src/components/Navbar.vue";
 
 const linksList = [
   {
@@ -113,6 +101,7 @@ export default defineComponent({
 
   components: {
     // EssentialLink,
+    Navbar,
   },
 
   setup() {

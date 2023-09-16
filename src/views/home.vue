@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: top-title 独立组件 -->
   <div class="top-title">首页</div>
   <div v-show="show" class="home">
     <!-- <div
@@ -177,6 +178,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.top-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 45px;
+  margin-bottom: -25px;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--color-text);
+  a {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.68;
+  }
+}
 .index-row {
   margin-top: 34px;
 }
@@ -210,20 +226,18 @@ export default {
     margin-right: 14%;
   }
 }
+a {
+  /* //去掉下换线 */
+  text-decoration: none;
 
-.top-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 20px;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--color-text);
-  a {
-    font-size: 13px;
-    font-weight: 600;
-    opacity: 0.68;
-  }
+  /* //文字颜色更改 */
+  color: black;
+}
+.router-link-exact-active {
+  color: black;
+}
+.router-link-active {
+  color: black;
 }
 
 footer {

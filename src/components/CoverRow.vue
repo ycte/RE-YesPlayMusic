@@ -96,9 +96,9 @@ export default {
         return new Date(item.publishTime).getFullYear();
       if (this.subText === "artist") {
         if (item.artist !== undefined)
-          return `<a href="/#/artist/${item.artist.id}">${item.artist.name}</a>`;
+          return `<a href="/#/artist/${item.artist.id}" style="text-decoration: none;color: black;">${item.artist.name}</a>`;
         if (item.artists !== undefined)
-          return `<a href="/#/artist/${item.artists[0].id}">${item.artists[0].name}</a>`;
+          return `<a href="/#/artist/${item.artists[0].id}" style="text-decoration: none;color: black;">${item.artists[0].name}</a>`;
       }
       if (this.subText === "albumType+releaseYear") {
         let albumType = item.type;
@@ -141,7 +141,7 @@ export default {
 <style lang="scss" scoped>
 .cover-row {
   // display: grid;
-  height: 230px;
+  height: 240px;
 }
 .scroll {
   height: 100%;
@@ -151,11 +151,13 @@ export default {
   color: var(--color-text);
   // border-left: 3%;
   .text {
-    margin-top: 0px;
+    margin-top: 12px;
+
     .title {
       font-size: 16px;
       font-weight: 600;
       line-height: 20px;
+      font-family: "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
@@ -173,6 +175,19 @@ export default {
       word-break: break-word;
     }
   }
+}
+a {
+  /* //去掉下换线 */
+  text-decoration: none;
+
+  /* //文字颜色更改 */
+  color: black;
+}
+.router-link-exact-active {
+  color: black;
+}
+.router-link-active {
+  color: black;
 }
 
 .item.artist {
