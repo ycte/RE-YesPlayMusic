@@ -1,5 +1,6 @@
 <template>
-  <transition name="slide-up">
+  <span>lyrics</span>
+  <!-- <transition name="slide-up">
     <div
       class="lyrics-page"
       :class="{ 'no-lyric': noLyric }"
@@ -119,9 +120,9 @@
                   >
                     <svg-icon icon-class="plus" />
                   </button-icon>
-                  <!-- <button-icon @click.native="openMenu" title="Menu"
+                  <button-icon @click.native="openMenu" title="Menu"
                     ><svg-icon icon-class="more"
-                  /></button-icon> -->
+                  /></button-icon>
                 </div>
               </div>
             </div>
@@ -269,352 +270,352 @@
         </button>
       </div>
     </div>
-  </transition>
+  </transition> -->
 </template>
 
 <script>
 // The lyrics page of Apple Music is so gorgeous, so I copy the design.
 // Some of the codes are from https://github.com/sl1673495/vue-netease-music
 
-import { mapState, mapMutations, mapActions } from 'vuex';
-import VueSlider from 'vue-slider-component';
-import { formatTrackTime } from '@/utils/common';
-import { getLyric } from '@/api/track';
-import { lyricParser } from '@/utils/lyrics';
-import ButtonIcon from '@/components/ButtonIcon.vue';
-import * as Vibrant from 'node-vibrant/dist/vibrant.worker.min.js';
-import Color from 'color';
-import { isAccountLoggedIn } from '@/utils/auth';
-import { hasListSource, getListSourcePath } from '@/utils/playList';
-import locale from '@/locale';
+// import { mapState, mapMutations, mapActions } from 'vuex';
+// import VueSlider from 'vue-slider-component';
+// import { formatTrackTime } from '@/utils/common';
+// import { getLyric } from '@/api/track';
+// import { lyricParser } from '@/utils/lyrics';
+// import ButtonIcon from '@/components/ButtonIcon.vue';
+// import * as Vibrant from 'node-vibrant/dist/vibrant.worker.min.js';
+// import Color from 'color';
+// import { isAccountLoggedIn } from '@/utils/auth';
+// import { hasListSource, getListSourcePath } from '@/utils/playList';
+// import locale from '@/locale';
 
 export default {
-  name: 'Lyrics',
-  components: {
-    VueSlider,
-    ButtonIcon,
-  },
-  data() {
-    return {
-      lyricsInterval: null,
-      lyric: [],
-      tlyric: [],
-      romalyric: [],
-      lyricType: 'translation', // or 'romaPronunciation'
-      highlightLyricIndex: -1,
-      minimize: true,
-      background: '',
-      date: this.formatTime(new Date()),
-    };
-  },
-  computed: {
-    ...mapState(['player', 'settings', 'showLyrics']),
-    currentTrack() {
-      return this.player.currentTrack;
-    },
-    volume: {
-      get() {
-        return this.player.volume;
-      },
-      set(value) {
-        this.player.volume = value;
-      },
-    },
-    imageUrl() {
-      return this.player.currentTrack?.al?.picUrl + '?param=1024y1024';
-    },
-    bgImageUrl() {
-      return this.player.currentTrack?.al?.picUrl + '?param=512y512';
-    },
-    isShowLyricTypeSwitch() {
-      return this.romalyric.length > 0 && this.tlyric.length > 0;
-    },
-    lyricToShow() {
-      return this.lyricType === 'translation'
-        ? this.lyricWithTranslation
-        : this.lyricWithRomaPronunciation;
-    },
-    lyricWithTranslation() {
-      let ret = [];
-      // 空内容的去除
-      const lyricFiltered = this.lyric.filter(({ content }) =>
-        Boolean(content)
-      );
-      // content统一转换数组形式
-      if (lyricFiltered.length) {
-        lyricFiltered.forEach(l => {
-          const { rawTime, time, content } = l;
-          const lyricItem = { time, content, contents: [content] };
-          const sameTimeTLyric = this.tlyric.find(
-            ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime
-          );
-          if (sameTimeTLyric) {
-            const { content: tLyricContent } = sameTimeTLyric;
-            if (content) {
-              lyricItem.contents.push(tLyricContent);
-            }
-          }
-          ret.push(lyricItem);
-        });
-      } else {
-        ret = lyricFiltered.map(({ time, content }) => ({
-          time,
-          content,
-          contents: [content],
-        }));
-      }
-      return ret;
-    },
-    lyricWithRomaPronunciation() {
-      let ret = [];
-      // 空内容的去除
-      const lyricFiltered = this.lyric.filter(({ content }) =>
-        Boolean(content)
-      );
-      // content统一转换数组形式
-      if (lyricFiltered.length) {
-        lyricFiltered.forEach(l => {
-          const { rawTime, time, content } = l;
-          const lyricItem = { time, content, contents: [content] };
-          const sameTimeRomaLyric = this.romalyric.find(
-            ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime
-          );
-          if (sameTimeRomaLyric) {
-            const { content: romaLyricContent } = sameTimeRomaLyric;
-            if (content) {
-              lyricItem.contents.push(romaLyricContent);
-            }
-          }
-          ret.push(lyricItem);
-        });
-      } else {
-        ret = lyricFiltered.map(({ time, content }) => ({
-          time,
-          content,
-          contents: [content],
-        }));
-      }
-      return ret;
-    },
-    lyricFontSize() {
-      return {
-        fontSize: `${this.$store.state.settings.lyricFontSize || 28}px`,
-      };
-    },
-    noLyric() {
-      return this.lyric.length == 0;
-    },
-    artist() {
-      return this.currentTrack?.ar
-        ? this.currentTrack.ar[0]
-        : { id: 0, name: 'unknown' };
-    },
-    album() {
-      return this.currentTrack?.al || { id: 0, name: 'unknown' };
-    },
-    theme() {
-      return this.settings.lyricsBackground === true ? 'dark' : 'auto';
-    },
-  },
-  watch: {
-    currentTrack() {
-      this.getLyric();
-      this.getCoverColor();
-    },
-    showLyrics(show) {
-      if (show) {
-        this.setLyricsInterval();
-        this.$store.commit('enableScrolling', false);
-      } else {
-        clearInterval(this.lyricsInterval);
-        this.$store.commit('enableScrolling', true);
-      }
-    },
-  },
-  created() {
-    this.getLyric();
-    this.getCoverColor();
-    this.initDate();
-  },
-  beforeDestroy: function () {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-  },
-  destroyed() {
-    clearInterval(this.lyricsInterval);
-  },
-  methods: {
-    ...mapMutations(['toggleLyrics', 'updateModal']),
-    ...mapActions(['likeATrack']),
-    initDate() {
-      var _this = this;
-      clearInterval(this.timer);
-      this.timer = setInterval(function () {
-        _this.date = _this.formatTime(new Date());
-      }, 1000);
-    },
-    formatTime(value) {
-      let hour = value.getHours().toString();
-      let minute = value.getMinutes().toString();
-      let second = value.getSeconds().toString();
-      return (
-        hour.padStart(2, '0') +
-        ':' +
-        minute.padStart(2, '0') +
-        ':' +
-        second.padStart(2, '0')
-      );
-    },
-    addToPlaylist() {
-      if (!isAccountLoggedIn()) {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      this.$store.dispatch('fetchLikedPlaylist');
-      this.updateModal({
-        modalName: 'addTrackToPlaylistModal',
-        key: 'show',
-        value: true,
-      });
-      this.updateModal({
-        modalName: 'addTrackToPlaylistModal',
-        key: 'selectedTrackID',
-        value: this.currentTrack?.id,
-      });
-    },
-    playPrevTrack() {
-      this.player.playPrevTrack();
-    },
-    playOrPause() {
-      this.player.playOrPause();
-    },
-    playNextTrack() {
-      if (this.player.isPersonalFM) {
-        this.player.playNextFMTrack();
-      } else {
-        this.player.playNextTrack();
-      }
-    },
-    getLyric() {
-      if (!this.currentTrack.id) return;
-      return getLyric(this.currentTrack.id).then(data => {
-        if (!data?.lrc?.lyric) {
-          this.lyric = [];
-          this.tlyric = [];
-          this.romalyric = [];
-          return false;
-        } else {
-          let { lyric, tlyric, romalyric } = lyricParser(data);
-          lyric = lyric.filter(
-            l => !/^作(词|曲)\s*(:|：)\s*无$/.exec(l.content)
-          );
-          let includeAM =
-            lyric.length <= 10 &&
-            lyric.map(l => l.content).includes('纯音乐，请欣赏');
-          if (includeAM) {
-            let reg = /^作(词|曲)\s*(:|：)\s*/;
-            let author = this.currentTrack?.ar[0]?.name;
-            lyric = lyric.filter(l => {
-              let regExpArr = l.content.match(reg);
-              return (
-                !regExpArr || l.content.replace(regExpArr[0], '') !== author
-              );
-            });
-          }
-          if (lyric.length === 1 && includeAM) {
-            this.lyric = [];
-            this.tlyric = [];
-            this.romalyric = [];
-            return false;
-          } else {
-            this.lyric = lyric;
-            this.tlyric = tlyric;
-            this.romalyric = romalyric;
-            if (tlyric.length * romalyric.length > 0) {
-              this.lyricType = 'translation';
-            } else {
-              this.lyricType =
-                lyric.length > 0 ? 'translation' : 'romaPronunciation';
-            }
-            return true;
-          }
-        }
-      });
-    },
-    switchLyricType() {
-      this.lyricType =
-        this.lyricType === 'translation' ? 'romaPronunciation' : 'translation';
-    },
-    formatTrackTime(value) {
-      return formatTrackTime(value);
-    },
-    clickLyricLine(value, startPlay = false) {
-      // TODO: 双击选择还会选中文字，考虑搞个右键菜单复制歌词
-      let jumpFlag = false;
-      this.lyric.filter(function (item) {
-        if (item.content == '纯音乐，请欣赏') {
-          jumpFlag = true;
-        }
-      });
-      if (window.getSelection().toString().length === 0 && !jumpFlag) {
-        this.player.seek(value);
-      }
-      if (startPlay === true) {
-        this.player.play();
-      }
-    },
-    setLyricsInterval() {
-      this.lyricsInterval = setInterval(() => {
-        const progress = this.player.seek(null, false) ?? 0;
-        let oldHighlightLyricIndex = this.highlightLyricIndex;
-        this.highlightLyricIndex = this.lyric.findIndex((l, index) => {
-          const nextLyric = this.lyric[index + 1];
-          return (
-            progress >= l.time && (nextLyric ? progress < nextLyric.time : true)
-          );
-        });
-        if (oldHighlightLyricIndex !== this.highlightLyricIndex) {
-          const el = document.getElementById(`line${this.highlightLyricIndex}`);
-          if (el)
-            el.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-            });
-        }
-      }, 50);
-    },
-    moveToFMTrash() {
-      this.player.moveToFMTrash();
-    },
-    switchRepeatMode() {
-      this.player.switchRepeatMode();
-    },
-    switchShuffle() {
-      this.player.switchShuffle();
-    },
-    getCoverColor() {
-      if (this.settings.lyricsBackground !== true) return;
-      const cover = this.currentTrack.al?.picUrl + '?param=256y256';
-      Vibrant.from(cover, { colorCount: 1 })
-        .getPalette()
-        .then(palette => {
-          const originColor = Color.rgb(palette.DarkMuted._rgb);
-          const color = originColor.darken(0.1).rgb().string();
-          const color2 = originColor.lighten(0.28).rotate(-30).rgb().string();
-          this.background = `linear-gradient(to top left, ${color}, ${color2})`;
-        });
-    },
-    hasList() {
-      return hasListSource();
-    },
-    getListPath() {
-      return getListSourcePath();
-    },
-    mute() {
-      this.player.mute();
-    },
-  },
+  name: "LyricsView",
+  // components: {
+  //   VueSlider,
+  //   ButtonIcon,
+  // },
+  // data() {
+  //   return {
+  //     lyricsInterval: null,
+  //     lyric: [],
+  //     tlyric: [],
+  //     romalyric: [],
+  //     lyricType: 'translation', // or 'romaPronunciation'
+  //     highlightLyricIndex: -1,
+  //     minimize: true,
+  //     background: '',
+  //     date: this.formatTime(new Date()),
+  //   };
+  // },
+  // computed: {
+  //   ...mapState(['player', 'settings', 'showLyrics']),
+  //   currentTrack() {
+  //     return this.player.currentTrack;
+  //   },
+  //   volume: {
+  //     get() {
+  //       return this.player.volume;
+  //     },
+  //     set(value) {
+  //       this.player.volume = value;
+  //     },
+  //   },
+  //   imageUrl() {
+  //     return this.player.currentTrack?.al?.picUrl + '?param=1024y1024';
+  //   },
+  //   bgImageUrl() {
+  //     return this.player.currentTrack?.al?.picUrl + '?param=512y512';
+  //   },
+  //   isShowLyricTypeSwitch() {
+  //     return this.romalyric.length > 0 && this.tlyric.length > 0;
+  //   },
+  //   lyricToShow() {
+  //     return this.lyricType === 'translation'
+  //       ? this.lyricWithTranslation
+  //       : this.lyricWithRomaPronunciation;
+  //   },
+  //   lyricWithTranslation() {
+  //     let ret = [];
+  //     // 空内容的去除
+  //     const lyricFiltered = this.lyric.filter(({ content }) =>
+  //       Boolean(content)
+  //     );
+  //     // content统一转换数组形式
+  //     if (lyricFiltered.length) {
+  //       lyricFiltered.forEach(l => {
+  //         const { rawTime, time, content } = l;
+  //         const lyricItem = { time, content, contents: [content] };
+  //         const sameTimeTLyric = this.tlyric.find(
+  //           ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime
+  //         );
+  //         if (sameTimeTLyric) {
+  //           const { content: tLyricContent } = sameTimeTLyric;
+  //           if (content) {
+  //             lyricItem.contents.push(tLyricContent);
+  //           }
+  //         }
+  //         ret.push(lyricItem);
+  //       });
+  //     } else {
+  //       ret = lyricFiltered.map(({ time, content }) => ({
+  //         time,
+  //         content,
+  //         contents: [content],
+  //       }));
+  //     }
+  //     return ret;
+  //   },
+  //   lyricWithRomaPronunciation() {
+  //     let ret = [];
+  //     // 空内容的去除
+  //     const lyricFiltered = this.lyric.filter(({ content }) =>
+  //       Boolean(content)
+  //     );
+  //     // content统一转换数组形式
+  //     if (lyricFiltered.length) {
+  //       lyricFiltered.forEach(l => {
+  //         const { rawTime, time, content } = l;
+  //         const lyricItem = { time, content, contents: [content] };
+  //         const sameTimeRomaLyric = this.romalyric.find(
+  //           ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime
+  //         );
+  //         if (sameTimeRomaLyric) {
+  //           const { content: romaLyricContent } = sameTimeRomaLyric;
+  //           if (content) {
+  //             lyricItem.contents.push(romaLyricContent);
+  //           }
+  //         }
+  //         ret.push(lyricItem);
+  //       });
+  //     } else {
+  //       ret = lyricFiltered.map(({ time, content }) => ({
+  //         time,
+  //         content,
+  //         contents: [content],
+  //       }));
+  //     }
+  //     return ret;
+  //   },
+  //   lyricFontSize() {
+  //     return {
+  //       fontSize: `${this.$store.state.settings.lyricFontSize || 28}px`,
+  //     };
+  //   },
+  //   noLyric() {
+  //     return this.lyric.length == 0;
+  //   },
+  //   artist() {
+  //     return this.currentTrack?.ar
+  //       ? this.currentTrack.ar[0]
+  //       : { id: 0, name: 'unknown' };
+  //   },
+  //   album() {
+  //     return this.currentTrack?.al || { id: 0, name: 'unknown' };
+  //   },
+  //   theme() {
+  //     return this.settings.lyricsBackground === true ? 'dark' : 'auto';
+  //   },
+  // },
+  // watch: {
+  //   currentTrack() {
+  //     this.getLyric();
+  //     this.getCoverColor();
+  //   },
+  //   showLyrics(show) {
+  //     if (show) {
+  //       this.setLyricsInterval();
+  //       this.$store.commit('enableScrolling', false);
+  //     } else {
+  //       clearInterval(this.lyricsInterval);
+  //       this.$store.commit('enableScrolling', true);
+  //     }
+  //   },
+  // },
+  // created() {
+  //   this.getLyric();
+  //   this.getCoverColor();
+  //   this.initDate();
+  // },
+  // beforeDestroy: function () {
+  //   if (this.timer) {
+  //     clearInterval(this.timer);
+  //   }
+  // },
+  // destroyed() {
+  //   clearInterval(this.lyricsInterval);
+  // },
+  // methods: {
+  //   ...mapMutations(['toggleLyrics', 'updateModal']),
+  //   ...mapActions(['likeATrack']),
+  //   initDate() {
+  //     var _this = this;
+  //     clearInterval(this.timer);
+  //     this.timer = setInterval(function () {
+  //       _this.date = _this.formatTime(new Date());
+  //     }, 1000);
+  //   },
+  //   formatTime(value) {
+  //     let hour = value.getHours().toString();
+  //     let minute = value.getMinutes().toString();
+  //     let second = value.getSeconds().toString();
+  //     return (
+  //       hour.padStart(2, '0') +
+  //       ':' +
+  //       minute.padStart(2, '0') +
+  //       ':' +
+  //       second.padStart(2, '0')
+  //     );
+  //   },
+  //   addToPlaylist() {
+  //     if (!isAccountLoggedIn()) {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     this.$store.dispatch('fetchLikedPlaylist');
+  //     this.updateModal({
+  //       modalName: 'addTrackToPlaylistModal',
+  //       key: 'show',
+  //       value: true,
+  //     });
+  //     this.updateModal({
+  //       modalName: 'addTrackToPlaylistModal',
+  //       key: 'selectedTrackID',
+  //       value: this.currentTrack?.id,
+  //     });
+  //   },
+  //   playPrevTrack() {
+  //     this.player.playPrevTrack();
+  //   },
+  //   playOrPause() {
+  //     this.player.playOrPause();
+  //   },
+  //   playNextTrack() {
+  //     if (this.player.isPersonalFM) {
+  //       this.player.playNextFMTrack();
+  //     } else {
+  //       this.player.playNextTrack();
+  //     }
+  //   },
+  //   getLyric() {
+  //     if (!this.currentTrack.id) return;
+  //     return getLyric(this.currentTrack.id).then(data => {
+  //       if (!data?.lrc?.lyric) {
+  //         this.lyric = [];
+  //         this.tlyric = [];
+  //         this.romalyric = [];
+  //         return false;
+  //       } else {
+  //         let { lyric, tlyric, romalyric } = lyricParser(data);
+  //         lyric = lyric.filter(
+  //           l => !/^作(词|曲)\s*(:|：)\s*无$/.exec(l.content)
+  //         );
+  //         let includeAM =
+  //           lyric.length <= 10 &&
+  //           lyric.map(l => l.content).includes('纯音乐，请欣赏');
+  //         if (includeAM) {
+  //           let reg = /^作(词|曲)\s*(:|：)\s*/;
+  //           let author = this.currentTrack?.ar[0]?.name;
+  //           lyric = lyric.filter(l => {
+  //             let regExpArr = l.content.match(reg);
+  //             return (
+  //               !regExpArr || l.content.replace(regExpArr[0], '') !== author
+  //             );
+  //           });
+  //         }
+  //         if (lyric.length === 1 && includeAM) {
+  //           this.lyric = [];
+  //           this.tlyric = [];
+  //           this.romalyric = [];
+  //           return false;
+  //         } else {
+  //           this.lyric = lyric;
+  //           this.tlyric = tlyric;
+  //           this.romalyric = romalyric;
+  //           if (tlyric.length * romalyric.length > 0) {
+  //             this.lyricType = 'translation';
+  //           } else {
+  //             this.lyricType =
+  //               lyric.length > 0 ? 'translation' : 'romaPronunciation';
+  //           }
+  //           return true;
+  //         }
+  //       }
+  //     });
+  //   },
+  //   switchLyricType() {
+  //     this.lyricType =
+  //       this.lyricType === 'translation' ? 'romaPronunciation' : 'translation';
+  //   },
+  //   formatTrackTime(value) {
+  //     return formatTrackTime(value);
+  //   },
+  //   clickLyricLine(value, startPlay = false) {
+  //     // TODO: 双击选择还会选中文字，考虑搞个右键菜单复制歌词
+  //     let jumpFlag = false;
+  //     this.lyric.filter(function (item) {
+  //       if (item.content == '纯音乐，请欣赏') {
+  //         jumpFlag = true;
+  //       }
+  //     });
+  //     if (window.getSelection().toString().length === 0 && !jumpFlag) {
+  //       this.player.seek(value);
+  //     }
+  //     if (startPlay === true) {
+  //       this.player.play();
+  //     }
+  //   },
+  //   setLyricsInterval() {
+  //     this.lyricsInterval = setInterval(() => {
+  //       const progress = this.player.seek(null, false) ?? 0;
+  //       let oldHighlightLyricIndex = this.highlightLyricIndex;
+  //       this.highlightLyricIndex = this.lyric.findIndex((l, index) => {
+  //         const nextLyric = this.lyric[index + 1];
+  //         return (
+  //           progress >= l.time && (nextLyric ? progress < nextLyric.time : true)
+  //         );
+  //       });
+  //       if (oldHighlightLyricIndex !== this.highlightLyricIndex) {
+  //         const el = document.getElementById(`line${this.highlightLyricIndex}`);
+  //         if (el)
+  //           el.scrollIntoView({
+  //             behavior: 'smooth',
+  //             block: 'center',
+  //           });
+  //       }
+  //     }, 50);
+  //   },
+  //   moveToFMTrash() {
+  //     this.player.moveToFMTrash();
+  //   },
+  //   switchRepeatMode() {
+  //     this.player.switchRepeatMode();
+  //   },
+  //   switchShuffle() {
+  //     this.player.switchShuffle();
+  //   },
+  //   getCoverColor() {
+  //     if (this.settings.lyricsBackground !== true) return;
+  //     const cover = this.currentTrack.al?.picUrl + '?param=256y256';
+  //     Vibrant.from(cover, { colorCount: 1 })
+  //       .getPalette()
+  //       .then(palette => {
+  //         const originColor = Color.rgb(palette.DarkMuted._rgb);
+  //         const color = originColor.darken(0.1).rgb().string();
+  //         const color2 = originColor.lighten(0.28).rotate(-30).rgb().string();
+  //         this.background = `linear-gradient(to top left, ${color}, ${color2})`;
+  //       });
+  //   },
+  //   hasList() {
+  //     return hasListSource();
+  //   },
+  //   getListPath() {
+  //     return getListSourcePath();
+  //   },
+  //   mute() {
+  //     this.player.mute();
+  //   },
+  // },
 };
 </script>
 
@@ -636,7 +637,7 @@ export default {
   --brightness-lyrics-background: 150%;
 }
 
-[data-theme='dark'] .lyrics-background {
+[data-theme="dark"] .lyrics-background {
   --contrast-lyrics-background: 125%;
   --brightness-lyrics-background: 50%;
 }

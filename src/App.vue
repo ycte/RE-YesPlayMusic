@@ -38,16 +38,16 @@ export default defineComponent({
       return isAccountLoggedIn();
     },
     showPlayer() {
-      console.log(
-        "showPlayer",
-        [
-          "mv",
-          "loginUsername",
-          "login",
-          "loginAccount",
-          "lastfmCallback",
-        ].includes(this.$route.name) === false
-      );
+      // console.log(
+      //   "showPlayer",
+      //   [
+      //     "mv",
+      //     "loginUsername",
+      //     "login",
+      //     "loginAccount",
+      //     "lastfmCallback",
+      //   ].includes(this.$route.name) === false
+      // );
       return (
         [
           "mv",

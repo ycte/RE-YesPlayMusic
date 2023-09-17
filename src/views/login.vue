@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="section-1">
+    <!-- <div class="section-1">
       <img src="/img/logos/yesplaymusic.png" />
       <svg-icon icon-class="x"></svg-icon>
       <img src="/img/logos/netease-music.png" />
@@ -14,8 +14,8 @@
       >
         <div class="container" :class="{ active: activeCard === 1 }">
           <div class="title-info">
-            <div class="title">{{ $t('login.loginText') }}</div>
-            <div class="info">{{ $t('login.accessToAll') }}</div>
+            <div class="title">{{ $t("login.loginText") }}</div>
+            <div class="info">{{ $t("login.accessToAll") }}</div>
           </div>
           <svg-icon icon-class="arrow-right"></svg-icon>
         </div>
@@ -28,39 +28,39 @@
       >
         <div class="container" :class="{ active: activeCard === 2 }">
           <div class="title-info">
-            <div class="title">{{ $t('login.search') }}</div>
-            <div class="info">{{ $t('login.readonly') }}</div>
+            <div class="title">{{ $t("login.search") }}</div>
+            <div class="info">{{ $t("login.readonly") }}</div>
           </div>
           <svg-icon icon-class="arrow-right"></svg-icon>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import NProgress from 'nprogress';
+// import NProgress from "nprogress";
 
-import SvgIcon from '@/components/SvgIcon.vue';
+// import SvgIcon from "src/components/SvgIcon.vue";
 
 export default {
-  name: 'Login',
-  components: {
-    SvgIcon,
-  },
-  data() {
-    return {
-      activeCard: 0,
-    };
-  },
-  created() {
-    NProgress.done();
-  },
-  methods: {
-    goTo(path) {
-      this.$router.push({ path: '/login/' + path });
-    },
-  },
+  name: "LoginView",
+  // components: {
+  //   // SvgIcon,
+  // },
+  // data() {
+  //   return {
+  //     activeCard: 0,
+  //   };
+  // },
+  // created() {
+  //   NProgress.done();
+  // },
+  // methods: {
+  //   goTo(path) {
+  //     this.$router.push({ path: "/login/" + path });
+  //   },
+  // },
 };
 </script>
 

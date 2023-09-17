@@ -12,7 +12,8 @@ if (process.env.IS_ELECTRON) {
   }
 } else {
   baseURL = process.env.VITE_NETEASE_API_URL;
-  baseURL = "http://localhost:3000";
+  // baseURL = "http://localhost:3000";
+  baseURL = "https://netease-cloud-music-api-gamma-five-22.vercel.app/";
 }
 
 const service = axios.create({
@@ -37,6 +38,8 @@ service.interceptors.request.use(function (config) {
 
   if (!process.env.IS_ELECTRON && !config.url.includes("/login")) {
     config.params.realIP = "211.161.244.70";
+    // config.params.realIP =
+    //   "https://netease-cloud-music-api-gamma-five-22.vercel.app/";
   }
 
   if (process.env.VUE_APP_REAL_IP) {

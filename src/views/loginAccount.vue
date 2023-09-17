@@ -1,5 +1,6 @@
 <template>
-  <div class="login">
+  <span>login account</span>
+  <!-- <div class="login">
     <div class="login-container">
       <div class="section-1">
         <img src="/img/logos/netease-music.png" />
@@ -105,193 +106,193 @@
         v-html="isElectron ? $t('login.noticeElectron') : $t('login.notice')"
       ></div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import QRCode from 'qrcode';
-import md5 from 'crypto-js/md5';
-import NProgress from 'nprogress';
-import { mapMutations } from 'vuex';
-import { setCookies } from '@/utils/auth';
-import nativeAlert from '@/utils/nativeAlert';
-import {
-  loginWithPhone,
-  loginWithEmail,
-  loginQrCodeKey,
-  loginQrCodeCheck,
-} from '@/api/auth';
+// import QRCode from 'qrcode';
+// import md5 from 'crypto-js/md5';
+// import NProgress from 'nprogress';
+// import { mapMutations } from 'vuex';
+// import { setCookies } from '@/utils/auth';
+// import nativeAlert from '@/utils/nativeAlert';
+// import {
+//   loginWithPhone,
+//   loginWithEmail,
+//   loginQrCodeKey,
+//   loginQrCodeCheck,
+// } from '@/api/auth';
 
 export default {
-  name: 'Login',
-  data() {
-    return {
-      processing: false,
-      mode: 'qrCode',
-      countryCode: '+86',
-      phoneNumber: '',
-      email: '',
-      password: '',
-      smsCode: '',
-      inputFocus: '',
-      qrCodeKey: '',
-      qrCodeSvg: '',
-      qrCodeCheckInterval: null,
-      qrCodeInformation: '打开网易云音乐APP扫码登录',
-    };
-  },
-  computed: {
-    isElectron() {
-      return process.env.IS_ELECTRON;
-    },
-  },
-  created() {
-    if (['phone', 'email', 'qrCode'].includes(this.$route.query.mode)) {
-      this.mode = this.$route.query.mode;
-    }
-    this.getQrCodeKey();
-  },
-  beforeDestroy() {
-    clearInterval(this.qrCodeCheckInterval);
-  },
-  methods: {
-    ...mapMutations(['updateData']),
-    validatePhone() {
-      if (
-        this.countryCode === '' ||
-        this.phone === '' ||
-        this.password === ''
-      ) {
-        nativeAlert('国家区号或手机号不正确');
-        this.processing = false;
-        return false;
-      }
-      return true;
-    },
-    validateEmail() {
-      const emailReg =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (
-        this.email === '' ||
-        this.password === '' ||
-        !emailReg.test(this.email)
-      ) {
-        nativeAlert('邮箱不正确');
-        return false;
-      }
-      return true;
-    },
-    login() {
-      if (this.mode === 'phone') {
-        this.processing = this.validatePhone();
-        if (!this.processing) return;
-        loginWithPhone({
-          countrycode: this.countryCode.replace('+', '').replace(/\s/g, ''),
-          phone: this.phoneNumber.replace(/\s/g, ''),
-          password: 'fakePassword',
-          md5_password: md5(this.password).toString(),
-        })
-          .then(this.handleLoginResponse)
-          .catch(error => {
-            this.processing = false;
-            nativeAlert(`发生错误，请检查你的账号密码是否正确\n${error}`);
-          });
-      } else {
-        this.processing = this.validateEmail();
-        if (!this.processing) return;
-        loginWithEmail({
-          email: this.email.replace(/\s/g, ''),
-          password: 'fakePassword',
-          md5_password: md5(this.password).toString(),
-        })
-          .then(this.handleLoginResponse)
-          .catch(error => {
-            this.processing = false;
-            nativeAlert(`发生错误，请检查你的账号密码是否正确\n${error}`);
-          });
-      }
-    },
-    handleLoginResponse(data) {
-      if (!data) {
-        this.processing = false;
-        return;
-      }
-      if (data.code === 200) {
-        setCookies(data.cookie);
-        this.updateData({ key: 'loginMode', value: 'account' });
-        this.$store.dispatch('fetchUserProfile').then(() => {
-          this.$store.dispatch('fetchLikedPlaylist').then(() => {
-            this.$router.push({ path: '/library' });
-          });
-        });
-      } else {
-        this.processing = false;
-        nativeAlert(data.msg ?? data.message ?? '账号或密码错误，请检查');
-      }
-    },
-    getQrCodeKey() {
-      return loginQrCodeKey().then(result => {
-        if (result.code === 200) {
-          this.qrCodeKey = result.data.unikey;
-          QRCode.toString(
-            `https://music.163.com/login?codekey=${this.qrCodeKey}`,
-            {
-              width: 192,
-              margin: 0,
-              color: {
-                dark: '#335eea',
-                light: '#00000000',
-              },
-              type: 'svg',
-            }
-          )
-            .then(svg => {
-              this.qrCodeSvg = `data:image/svg+xml;utf8,${encodeURIComponent(
-                svg
-              )}`;
-            })
-            .catch(err => {
-              console.error(err);
-            })
-            .finally(() => {
-              NProgress.done();
-            });
-        }
-        this.checkQrCodeLogin();
-      });
-    },
-    checkQrCodeLogin() {
-      // 清除二维码检测
-      clearInterval(this.qrCodeCheckInterval);
-      this.qrCodeCheckInterval = setInterval(() => {
-        if (this.qrCodeKey === '') return;
-        loginQrCodeCheck(this.qrCodeKey).then(result => {
-          if (result.code === 800) {
-            this.getQrCodeKey(); // 重新生成QrCode
-            this.qrCodeInformation = '二维码已失效，请重新扫码';
-          } else if (result.code === 802) {
-            this.qrCodeInformation = '扫描成功，请在手机上确认登录';
-          } else if (result.code === 801) {
-            this.qrCodeInformation = '打开网易云音乐APP扫码登录';
-          } else if (result.code === 803) {
-            clearInterval(this.qrCodeCheckInterval);
-            this.qrCodeInformation = '登录成功，请稍等...';
-            result.code = 200;
-            result.cookie = result.cookie.replaceAll(' HTTPOnly', '');
-            this.handleLoginResponse(result);
-          }
-        });
-      }, 1000);
-    },
-    changeMode(mode) {
-      this.mode = mode;
-      if (mode === 'qrCode') {
-        this.checkQrCodeLogin();
-      } else {
-        clearInterval(this.qrCodeCheckInterval);
-      }
-    },
-  },
+  name: "LoginAccount",
+  // data() {
+  //   return {
+  //     processing: false,
+  //     mode: 'qrCode',
+  //     countryCode: '+86',
+  //     phoneNumber: '',
+  //     email: '',
+  //     password: '',
+  //     smsCode: '',
+  //     inputFocus: '',
+  //     qrCodeKey: '',
+  //     qrCodeSvg: '',
+  //     qrCodeCheckInterval: null,
+  //     qrCodeInformation: '打开网易云音乐APP扫码登录',
+  //   };
+  // },
+  // computed: {
+  //   isElectron() {
+  //     return process.env.IS_ELECTRON;
+  //   },
+  // },
+  // created() {
+  //   if (['phone', 'email', 'qrCode'].includes(this.$route.query.mode)) {
+  //     this.mode = this.$route.query.mode;
+  //   }
+  //   this.getQrCodeKey();
+  // },
+  // beforeDestroy() {
+  //   clearInterval(this.qrCodeCheckInterval);
+  // },
+  // methods: {
+  //   ...mapMutations(['updateData']),
+  //   validatePhone() {
+  //     if (
+  //       this.countryCode === '' ||
+  //       this.phone === '' ||
+  //       this.password === ''
+  //     ) {
+  //       nativeAlert('国家区号或手机号不正确');
+  //       this.processing = false;
+  //       return false;
+  //     }
+  //     return true;
+  //   },
+  //   validateEmail() {
+  //     const emailReg =
+  //       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //     if (
+  //       this.email === '' ||
+  //       this.password === '' ||
+  //       !emailReg.test(this.email)
+  //     ) {
+  //       nativeAlert('邮箱不正确');
+  //       return false;
+  //     }
+  //     return true;
+  //   },
+  //   login() {
+  //     if (this.mode === 'phone') {
+  //       this.processing = this.validatePhone();
+  //       if (!this.processing) return;
+  //       loginWithPhone({
+  //         countrycode: this.countryCode.replace('+', '').replace(/\s/g, ''),
+  //         phone: this.phoneNumber.replace(/\s/g, ''),
+  //         password: 'fakePassword',
+  //         md5_password: md5(this.password).toString(),
+  //       })
+  //         .then(this.handleLoginResponse)
+  //         .catch(error => {
+  //           this.processing = false;
+  //           nativeAlert(`发生错误，请检查你的账号密码是否正确\n${error}`);
+  //         });
+  //     } else {
+  //       this.processing = this.validateEmail();
+  //       if (!this.processing) return;
+  //       loginWithEmail({
+  //         email: this.email.replace(/\s/g, ''),
+  //         password: 'fakePassword',
+  //         md5_password: md5(this.password).toString(),
+  //       })
+  //         .then(this.handleLoginResponse)
+  //         .catch(error => {
+  //           this.processing = false;
+  //           nativeAlert(`发生错误，请检查你的账号密码是否正确\n${error}`);
+  //         });
+  //     }
+  //   },
+  //   handleLoginResponse(data) {
+  //     if (!data) {
+  //       this.processing = false;
+  //       return;
+  //     }
+  //     if (data.code === 200) {
+  //       setCookies(data.cookie);
+  //       this.updateData({ key: 'loginMode', value: 'account' });
+  //       this.$store.dispatch('fetchUserProfile').then(() => {
+  //         this.$store.dispatch('fetchLikedPlaylist').then(() => {
+  //           this.$router.push({ path: '/library' });
+  //         });
+  //       });
+  //     } else {
+  //       this.processing = false;
+  //       nativeAlert(data.msg ?? data.message ?? '账号或密码错误，请检查');
+  //     }
+  //   },
+  //   getQrCodeKey() {
+  //     return loginQrCodeKey().then(result => {
+  //       if (result.code === 200) {
+  //         this.qrCodeKey = result.data.unikey;
+  //         QRCode.toString(
+  //           `https://music.163.com/login?codekey=${this.qrCodeKey}`,
+  //           {
+  //             width: 192,
+  //             margin: 0,
+  //             color: {
+  //               dark: '#335eea',
+  //               light: '#00000000',
+  //             },
+  //             type: 'svg',
+  //           }
+  //         )
+  //           .then(svg => {
+  //             this.qrCodeSvg = `data:image/svg+xml;utf8,${encodeURIComponent(
+  //               svg
+  //             )}`;
+  //           })
+  //           .catch(err => {
+  //             console.error(err);
+  //           })
+  //           .finally(() => {
+  //             NProgress.done();
+  //           });
+  //       }
+  //       this.checkQrCodeLogin();
+  //     });
+  //   },
+  //   checkQrCodeLogin() {
+  //     // 清除二维码检测
+  //     clearInterval(this.qrCodeCheckInterval);
+  //     this.qrCodeCheckInterval = setInterval(() => {
+  //       if (this.qrCodeKey === '') return;
+  //       loginQrCodeCheck(this.qrCodeKey).then(result => {
+  //         if (result.code === 800) {
+  //           this.getQrCodeKey(); // 重新生成QrCode
+  //           this.qrCodeInformation = '二维码已失效，请重新扫码';
+  //         } else if (result.code === 802) {
+  //           this.qrCodeInformation = '扫描成功，请在手机上确认登录';
+  //         } else if (result.code === 801) {
+  //           this.qrCodeInformation = '打开网易云音乐APP扫码登录';
+  //         } else if (result.code === 803) {
+  //           clearInterval(this.qrCodeCheckInterval);
+  //           this.qrCodeInformation = '登录成功，请稍等...';
+  //           result.code = 200;
+  //           result.cookie = result.cookie.replaceAll(' HTTPOnly', '');
+  //           this.handleLoginResponse(result);
+  //         }
+  //       });
+  //     }, 1000);
+  //   },
+  //   changeMode(mode) {
+  //     this.mode = mode;
+  //     if (mode === 'qrCode') {
+  //       this.checkQrCodeLogin();
+  //     } else {
+  //       clearInterval(this.qrCodeCheckInterval);
+  //     }
+  //   },
+  // },
 };
 </script>
 

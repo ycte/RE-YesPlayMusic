@@ -6,7 +6,7 @@ import { toRaw } from "vue";
 
 // console.log(pinia());
 const store = useStore(pinia());
-console.log("auth", store.player);
+// console.log("auth", store.player);
 // console.log("auth", store);
 // console.log(store.data.loginMode);
 // console.log(store.action);

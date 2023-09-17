@@ -1,5 +1,6 @@
 <template>
-  <div v-show="show">
+  <span>dailyTracks</span>
+  <!-- <div v-show="show">
     <div class="special-playlist">
       <div class="title gradient"> 每日歌曲推荐 </div>
       <div class="subtitle">根据你的音乐口味生成 · 每天6:00更新</div>
@@ -10,50 +11,50 @@
       type="playlist"
       dbclick-track-func="dailyTracks"
     />
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
-import NProgress from 'nprogress';
-import { dailyRecommendTracks } from '@/api/playlist';
+// import { mapMutations, mapState } from "vuex";
+// import NProgress from "nprogress";
+// import { dailyRecommendTracks } from "@/api/playlist";
 
-import TrackList from '@/components/TrackList.vue';
+// import TrackList from "@/components/TrackList.vue";
 
 export default {
-  name: 'DailyTracks',
-  components: {
-    TrackList,
-  },
-  data() {
-    return {
-      show: false,
-    };
-  },
-  computed: {
-    ...mapState(['player', 'data', 'dailyTracks']),
-  },
-  created() {
-    if (this.dailyTracks.length === 0) {
-      setTimeout(() => {
-        if (!this.show) NProgress.start();
-      }, 1000);
-      this.loadDailyTracks();
-    } else {
-      this.show = true;
-    }
-    this.$parent.$refs.main.scrollTo(0, 0);
-  },
-  methods: {
-    ...mapMutations(['updateDailyTracks']),
-    loadDailyTracks() {
-      dailyRecommendTracks().then(result => {
-        this.updateDailyTracks(result.data.dailySongs);
-        NProgress.done();
-        this.show = true;
-      });
-    },
-  },
+  name: "DailyTracks",
+  // components: {
+  //   TrackList,
+  // },
+  // data() {
+  //   return {
+  //     show: false,
+  //   };
+  // },
+  // computed: {
+  //   ...mapState(["player", "data", "dailyTracks"]),
+  // },
+  // created() {
+  //   if (this.dailyTracks.length === 0) {
+  //     setTimeout(() => {
+  //       if (!this.show) NProgress.start();
+  //     }, 1000);
+  //     this.loadDailyTracks();
+  //   } else {
+  //     this.show = true;
+  //   }
+  //   this.$parent.$refs.main.scrollTo(0, 0);
+  // },
+  // methods: {
+  //   ...mapMutations(["updateDailyTracks"]),
+  //   loadDailyTracks() {
+  //     dailyRecommendTracks().then((result) => {
+  //       this.updateDailyTracks(result.data.dailySongs);
+  //       NProgress.done();
+  //       this.show = true;
+  //     });
+  //   },
+  // },
 };
 </script>
 

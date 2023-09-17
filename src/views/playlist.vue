@@ -1,5 +1,6 @@
 <template>
-  <div v-show="show" class="playlist">
+  <span>playlist</span>
+  <!-- <div v-show="show" class="playlist">
     <div
       v-if="specialPlaylistInfo === undefined && !isLikeSongsPage"
       class="playlist-info"
@@ -97,7 +98,7 @@
         :class="specialPlaylistInfo.gradient"
         @click.right="openMenu"
       >
-        <!-- <img :src="playlist.coverImgUrl | resizeImage" /> -->
+        <img :src="playlist.coverImgUrl | resizeImage" />
         {{ specialPlaylistInfo.name }}
       </div>
       <div class="subtitle"
@@ -193,7 +194,7 @@
     >
 
     <ContextMenu ref="playlistMenu">
-      <!-- <div class="item">{{ $t('contextMenu.addToQueue') }}</div> -->
+      <div class="item">{{ $t('contextMenu.addToQueue') }}</div>
       <div class="item" @click="likePlaylist(true)">{{
         playlist.subscribed
           ? $t('contextMenu.removeFromLibrary')
@@ -215,333 +216,333 @@
         >删除歌单</div
       >
     </ContextMenu>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { mapMutations, mapActions, mapState } from 'vuex';
-import NProgress from 'nprogress';
-import {
-  getPlaylistDetail,
-  subscribePlaylist,
-  deletePlaylist,
-} from '@/api/playlist';
-import { getTrackDetail } from '@/api/track';
-import { isAccountLoggedIn } from '@/utils/auth';
-import nativeAlert from '@/utils/nativeAlert';
-import locale from '@/locale';
+// import { mapMutations, mapActions, mapState } from 'vuex';
+// import NProgress from 'nprogress';
+// import {
+//   getPlaylistDetail,
+//   subscribePlaylist,
+//   deletePlaylist,
+// } from '@/api/playlist';
+// import { getTrackDetail } from '@/api/track';
+// import { isAccountLoggedIn } from '@/utils/auth';
+// import nativeAlert from '@/utils/nativeAlert';
+// import locale from '@/locale';
 
-import ButtonTwoTone from '@/components/ButtonTwoTone.vue';
-import ContextMenu from '@/components/ContextMenu.vue';
-import TrackList from '@/components/TrackList.vue';
-import Cover from '@/components/Cover.vue';
-import Modal from '@/components/Modal.vue';
+// import ButtonTwoTone from '@/components/ButtonTwoTone.vue';
+// import ContextMenu from '@/components/ContextMenu.vue';
+// import TrackList from '@/components/TrackList.vue';
+// import Cover from '@/components/Cover.vue';
+// import Modal from '@/components/Modal.vue';
 
-const specialPlaylist = {
-  2829816518: {
-    name: '欧美私人订制',
-    gradient: 'gradient-pink-purple-blue',
-  },
-  2890490211: {
-    name: '助眠鸟鸣声',
-    gradient: 'gradient-green',
-  },
-  5089855855: {
-    name: '夜的胡思乱想',
-    gradient: 'gradient-moonstone-blue',
-  },
-  2888212971: {
-    name: '全球百大DJ',
-    gradient: 'gradient-orange-red',
-  },
-  2829733864: {
-    name: '睡眠伴侣',
-    gradient: 'gradient-midnight-blue',
-  },
-  2829844572: {
-    name: '洗澡时听的歌',
-    gradient: 'gradient-yellow',
-  },
-  2920647537: {
-    name: '还是会想你',
-    gradient: 'gradient-dark-blue-midnight-blue',
-  },
-  2890501416: {
-    name: '助眠白噪声',
-    gradient: 'gradient-sky-blue',
-  },
-  5217150082: {
-    name: '摇滚唱片行',
-    gradient: 'gradient-yellow-red',
-  },
-  2829961453: {
-    name: '古风音乐大赏',
-    gradient: 'gradient-fog',
-  },
-  4923261701: {
-    name: 'Trance',
-    gradient: 'gradient-light-red-light-blue ',
-  },
-  5212729721: {
-    name: '欧美点唱机',
-    gradient: 'gradient-indigo-pink-yellow',
-  },
-  3103434282: {
-    name: '甜蜜少女心',
-    gradient: 'gradient-pink',
-  },
-  2829896389: {
-    name: '日系私人订制',
-    gradient: 'gradient-yellow-pink',
-  },
-  2829779628: {
-    name: '运动随身听',
-    gradient: 'gradient-orange-red',
-  },
-  2860654884: {
-    name: '独立女声精选',
-    gradient: 'gradient-sharp-blue',
-  },
-  898150: {
-    name: '浪漫婚礼专用',
-    gradient: 'gradient-pink',
-  },
-  2638104052: {
-    name: '牛奶泡泡浴',
-    gradient: 'gradient-fog',
-  },
-  5317236517: {
-    name: '后朋克精选',
-    gradient: 'gradient-pink-purple-blue',
-  },
-  2821115454: {
-    name: '一周原创发现',
-    gradient: 'gradient-blue-purple',
-  },
-  2829883282: {
-    name: '华语私人雷达',
-    gradient: 'gradient-yellow-red',
-  },
-  3136952023: {
-    name: '私人雷达',
-    gradient: 'gradient-radar',
-  },
-};
+// const specialPlaylist = {
+//   2829816518: {
+//     name: '欧美私人订制',
+//     gradient: 'gradient-pink-purple-blue',
+//   },
+//   2890490211: {
+//     name: '助眠鸟鸣声',
+//     gradient: 'gradient-green',
+//   },
+//   5089855855: {
+//     name: '夜的胡思乱想',
+//     gradient: 'gradient-moonstone-blue',
+//   },
+//   2888212971: {
+//     name: '全球百大DJ',
+//     gradient: 'gradient-orange-red',
+//   },
+//   2829733864: {
+//     name: '睡眠伴侣',
+//     gradient: 'gradient-midnight-blue',
+//   },
+//   2829844572: {
+//     name: '洗澡时听的歌',
+//     gradient: 'gradient-yellow',
+//   },
+//   2920647537: {
+//     name: '还是会想你',
+//     gradient: 'gradient-dark-blue-midnight-blue',
+//   },
+//   2890501416: {
+//     name: '助眠白噪声',
+//     gradient: 'gradient-sky-blue',
+//   },
+//   5217150082: {
+//     name: '摇滚唱片行',
+//     gradient: 'gradient-yellow-red',
+//   },
+//   2829961453: {
+//     name: '古风音乐大赏',
+//     gradient: 'gradient-fog',
+//   },
+//   4923261701: {
+//     name: 'Trance',
+//     gradient: 'gradient-light-red-light-blue ',
+//   },
+//   5212729721: {
+//     name: '欧美点唱机',
+//     gradient: 'gradient-indigo-pink-yellow',
+//   },
+//   3103434282: {
+//     name: '甜蜜少女心',
+//     gradient: 'gradient-pink',
+//   },
+//   2829896389: {
+//     name: '日系私人订制',
+//     gradient: 'gradient-yellow-pink',
+//   },
+//   2829779628: {
+//     name: '运动随身听',
+//     gradient: 'gradient-orange-red',
+//   },
+//   2860654884: {
+//     name: '独立女声精选',
+//     gradient: 'gradient-sharp-blue',
+//   },
+//   898150: {
+//     name: '浪漫婚礼专用',
+//     gradient: 'gradient-pink',
+//   },
+//   2638104052: {
+//     name: '牛奶泡泡浴',
+//     gradient: 'gradient-fog',
+//   },
+//   5317236517: {
+//     name: '后朋克精选',
+//     gradient: 'gradient-pink-purple-blue',
+//   },
+//   2821115454: {
+//     name: '一周原创发现',
+//     gradient: 'gradient-blue-purple',
+//   },
+//   2829883282: {
+//     name: '华语私人雷达',
+//     gradient: 'gradient-yellow-red',
+//   },
+//   3136952023: {
+//     name: '私人雷达',
+//     gradient: 'gradient-radar',
+//   },
+// };
 
 export default {
-  name: 'Playlist',
-  components: {
-    Cover,
-    ButtonTwoTone,
-    TrackList,
-    Modal,
-    ContextMenu,
-  },
-  directives: {
-    focus: {
-      inserted: function (el) {
-        el.focus();
-      },
-    },
-  },
-  data() {
-    return {
-      show: false,
-      playlist: {
-        id: 0,
-        coverImgUrl: '',
-        creator: {
-          userId: '',
-        },
-        trackIds: [],
-      },
-      showFullDescription: false,
-      tracks: [],
-      loadingMore: false,
-      hasMore: false,
-      lastLoadedTrackIndex: 9,
-      displaySearchInPlaylist: false, // 是否显示搜索框
-      searchKeyWords: '', // 搜索使用的关键字
-      inputSearchKeyWords: '', // 搜索框中正在输入的关键字
-      inputFocus: false,
-      debounceTimeout: null,
-      searchInputWidth: '0px', // 搜索框宽度
-    };
-  },
-  computed: {
-    ...mapState(['player', 'data']),
-    isLikeSongsPage() {
-      return this.$route.name === 'likedSongs';
-    },
-    specialPlaylistInfo() {
-      return specialPlaylist[this.playlist.id];
-    },
-    isUserOwnPlaylist() {
-      return (
-        this.playlist.creator.userId === this.data.user.userId &&
-        this.playlist.id !== this.data.likedSongPlaylistID
-      );
-    },
-    filteredTracks() {
-      return this.tracks.filter(
-        track =>
-          (track.name &&
-            track.name
-              .toLowerCase()
-              .includes(this.searchKeyWords.toLowerCase())) ||
-          (track.al.name &&
-            track.al.name
-              .toLowerCase()
-              .includes(this.searchKeyWords.toLowerCase())) ||
-          track.ar.find(
-            artist =>
-              artist.name &&
-              artist.name
-                .toLowerCase()
-                .includes(this.searchKeyWords.toLowerCase())
-          )
-      );
-    },
-  },
-  created() {
-    if (this.$route.name === 'likedSongs') {
-      this.loadData(this.data.likedSongPlaylistID);
-    } else {
-      this.loadData(this.$route.params.id);
-    }
-    setTimeout(() => {
-      if (!this.show) NProgress.start();
-    }, 1000);
-  },
-  methods: {
-    ...mapMutations(['appendTrackToPlayerList']),
-    ...mapActions(['playFirstTrackOnList', 'playTrackOnListByID', 'showToast']),
-    playPlaylistByID(trackID = 'first') {
-      let trackIDs = this.playlist.trackIds.map(t => t.id);
-      this.$store.state.player.replacePlaylist(
-        trackIDs,
-        this.playlist.id,
-        'playlist',
-        trackID
-      );
-    },
-    likePlaylist(toast = false) {
-      if (!isAccountLoggedIn()) {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      subscribePlaylist({
-        id: this.playlist.id,
-        t: this.playlist.subscribed ? 2 : 1,
-      }).then(data => {
-        if (data.code === 200) {
-          this.playlist.subscribed = !this.playlist.subscribed;
-          if (toast === true)
-            this.showToast(
-              this.playlist.subscribed ? '已保存到音乐库' : '已从音乐库删除'
-            );
-        }
-        getPlaylistDetail(this.id, true).then(data => {
-          this.playlist = data.playlist;
-        });
-      });
-    },
-    loadData(id, next = undefined) {
-      this.id = id;
-      getPlaylistDetail(this.id, true)
-        .then(data => {
-          this.playlist = data.playlist;
-          this.tracks = data.playlist.tracks;
-          NProgress.done();
-          if (next !== undefined) next();
-          this.show = true;
-          this.lastLoadedTrackIndex = data.playlist.tracks.length - 1;
-          return data;
-        })
-        .then(() => {
-          if (this.playlist.trackCount > this.tracks.length) {
-            this.loadingMore = true;
-            this.loadMore();
-          }
-        });
-    },
-    loadMore(loadNum = 100) {
-      let trackIDs = this.playlist.trackIds.filter((t, index) => {
-        if (
-          index > this.lastLoadedTrackIndex &&
-          index <= this.lastLoadedTrackIndex + loadNum
-        ) {
-          return t;
-        }
-      });
-      trackIDs = trackIDs.map(t => t.id);
-      getTrackDetail(trackIDs.join(',')).then(data => {
-        this.tracks.push(...data.songs);
-        this.lastLoadedTrackIndex += trackIDs.length;
-        this.loadingMore = false;
-        if (this.lastLoadedTrackIndex + 1 === this.playlist.trackIds.length) {
-          this.hasMore = false;
-        } else {
-          this.hasMore = true;
-        }
-      });
-    },
-    openMenu(e) {
-      this.$refs.playlistMenu.openMenu(e);
-    },
-    deletePlaylist() {
-      if (!isAccountLoggedIn()) {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      let confirmation = confirm(`确定要删除歌单 ${this.playlist.name}？`);
-      if (confirmation === true) {
-        deletePlaylist(this.playlist.id).then(data => {
-          if (data.code === 200) {
-            nativeAlert(`已删除歌单 ${this.playlist.name}`);
-            this.$router.go(-1);
-          } else {
-            nativeAlert('发生错误');
-          }
-        });
-      }
-    },
-    editPlaylist() {
-      nativeAlert('此功能开发中');
-    },
-    searchInPlaylist() {
-      this.displaySearchInPlaylist =
-        !this.displaySearchInPlaylist || this.isLikeSongsPage;
-      if (this.displaySearchInPlaylist == false) {
-        this.searchKeyWords = '';
-        this.inputSearchKeyWords = '';
-      } else {
-        this.searchInputWidth = '172px';
-        this.loadMore(500);
-      }
-    },
-    removeTrack(trackID) {
-      if (!isAccountLoggedIn()) {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      this.tracks = this.tracks.filter(t => t.id !== trackID);
-    },
-    inputDebounce() {
-      if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
-      this.debounceTimeout = setTimeout(() => {
-        this.searchKeyWords = this.inputSearchKeyWords;
-      }, 600);
-    },
-    toggleFullDescription() {
-      this.showFullDescription = !this.showFullDescription;
-      if (this.showFullDescription) {
-        this.$store.commit('enableScrolling', false);
-      } else {
-        this.$store.commit('enableScrolling', true);
-      }
-    },
-  },
+  name: "PlaylistView",
+  // components: {
+  //   Cover,
+  //   ButtonTwoTone,
+  //   TrackList,
+  //   Modal,
+  //   ContextMenu,
+  // },
+  // directives: {
+  //   focus: {
+  //     inserted: function (el) {
+  //       el.focus();
+  //     },
+  //   },
+  // },
+  // data() {
+  //   return {
+  //     show: false,
+  //     playlist: {
+  //       id: 0,
+  //       coverImgUrl: '',
+  //       creator: {
+  //         userId: '',
+  //       },
+  //       trackIds: [],
+  //     },
+  //     showFullDescription: false,
+  //     tracks: [],
+  //     loadingMore: false,
+  //     hasMore: false,
+  //     lastLoadedTrackIndex: 9,
+  //     displaySearchInPlaylist: false, // 是否显示搜索框
+  //     searchKeyWords: '', // 搜索使用的关键字
+  //     inputSearchKeyWords: '', // 搜索框中正在输入的关键字
+  //     inputFocus: false,
+  //     debounceTimeout: null,
+  //     searchInputWidth: '0px', // 搜索框宽度
+  //   };
+  // },
+  // computed: {
+  //   ...mapState(['player', 'data']),
+  //   isLikeSongsPage() {
+  //     return this.$route.name === 'likedSongs';
+  //   },
+  //   specialPlaylistInfo() {
+  //     return specialPlaylist[this.playlist.id];
+  //   },
+  //   isUserOwnPlaylist() {
+  //     return (
+  //       this.playlist.creator.userId === this.data.user.userId &&
+  //       this.playlist.id !== this.data.likedSongPlaylistID
+  //     );
+  //   },
+  //   filteredTracks() {
+  //     return this.tracks.filter(
+  //       track =>
+  //         (track.name &&
+  //           track.name
+  //             .toLowerCase()
+  //             .includes(this.searchKeyWords.toLowerCase())) ||
+  //         (track.al.name &&
+  //           track.al.name
+  //             .toLowerCase()
+  //             .includes(this.searchKeyWords.toLowerCase())) ||
+  //         track.ar.find(
+  //           artist =>
+  //             artist.name &&
+  //             artist.name
+  //               .toLowerCase()
+  //               .includes(this.searchKeyWords.toLowerCase())
+  //         )
+  //     );
+  //   },
+  // },
+  // created() {
+  //   if (this.$route.name === 'likedSongs') {
+  //     this.loadData(this.data.likedSongPlaylistID);
+  //   } else {
+  //     this.loadData(this.$route.params.id);
+  //   }
+  //   setTimeout(() => {
+  //     if (!this.show) NProgress.start();
+  //   }, 1000);
+  // },
+  // methods: {
+  //   ...mapMutations(['appendTrackToPlayerList']),
+  //   ...mapActions(['playFirstTrackOnList', 'playTrackOnListByID', 'showToast']),
+  //   playPlaylistByID(trackID = 'first') {
+  //     let trackIDs = this.playlist.trackIds.map(t => t.id);
+  //     this.$store.state.player.replacePlaylist(
+  //       trackIDs,
+  //       this.playlist.id,
+  //       'playlist',
+  //       trackID
+  //     );
+  //   },
+  //   likePlaylist(toast = false) {
+  //     if (!isAccountLoggedIn()) {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     subscribePlaylist({
+  //       id: this.playlist.id,
+  //       t: this.playlist.subscribed ? 2 : 1,
+  //     }).then(data => {
+  //       if (data.code === 200) {
+  //         this.playlist.subscribed = !this.playlist.subscribed;
+  //         if (toast === true)
+  //           this.showToast(
+  //             this.playlist.subscribed ? '已保存到音乐库' : '已从音乐库删除'
+  //           );
+  //       }
+  //       getPlaylistDetail(this.id, true).then(data => {
+  //         this.playlist = data.playlist;
+  //       });
+  //     });
+  //   },
+  //   loadData(id, next = undefined) {
+  //     this.id = id;
+  //     getPlaylistDetail(this.id, true)
+  //       .then(data => {
+  //         this.playlist = data.playlist;
+  //         this.tracks = data.playlist.tracks;
+  //         NProgress.done();
+  //         if (next !== undefined) next();
+  //         this.show = true;
+  //         this.lastLoadedTrackIndex = data.playlist.tracks.length - 1;
+  //         return data;
+  //       })
+  //       .then(() => {
+  //         if (this.playlist.trackCount > this.tracks.length) {
+  //           this.loadingMore = true;
+  //           this.loadMore();
+  //         }
+  //       });
+  //   },
+  //   loadMore(loadNum = 100) {
+  //     let trackIDs = this.playlist.trackIds.filter((t, index) => {
+  //       if (
+  //         index > this.lastLoadedTrackIndex &&
+  //         index <= this.lastLoadedTrackIndex + loadNum
+  //       ) {
+  //         return t;
+  //       }
+  //     });
+  //     trackIDs = trackIDs.map(t => t.id);
+  //     getTrackDetail(trackIDs.join(',')).then(data => {
+  //       this.tracks.push(...data.songs);
+  //       this.lastLoadedTrackIndex += trackIDs.length;
+  //       this.loadingMore = false;
+  //       if (this.lastLoadedTrackIndex + 1 === this.playlist.trackIds.length) {
+  //         this.hasMore = false;
+  //       } else {
+  //         this.hasMore = true;
+  //       }
+  //     });
+  //   },
+  //   openMenu(e) {
+  //     this.$refs.playlistMenu.openMenu(e);
+  //   },
+  //   deletePlaylist() {
+  //     if (!isAccountLoggedIn()) {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     let confirmation = confirm(`确定要删除歌单 ${this.playlist.name}？`);
+  //     if (confirmation === true) {
+  //       deletePlaylist(this.playlist.id).then(data => {
+  //         if (data.code === 200) {
+  //           nativeAlert(`已删除歌单 ${this.playlist.name}`);
+  //           this.$router.go(-1);
+  //         } else {
+  //           nativeAlert('发生错误');
+  //         }
+  //       });
+  //     }
+  //   },
+  //   editPlaylist() {
+  //     nativeAlert('此功能开发中');
+  //   },
+  //   searchInPlaylist() {
+  //     this.displaySearchInPlaylist =
+  //       !this.displaySearchInPlaylist || this.isLikeSongsPage;
+  //     if (this.displaySearchInPlaylist == false) {
+  //       this.searchKeyWords = '';
+  //       this.inputSearchKeyWords = '';
+  //     } else {
+  //       this.searchInputWidth = '172px';
+  //       this.loadMore(500);
+  //     }
+  //   },
+  //   removeTrack(trackID) {
+  //     if (!isAccountLoggedIn()) {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     this.tracks = this.tracks.filter(t => t.id !== trackID);
+  //   },
+  //   inputDebounce() {
+  //     if (this.debounceTimeout) clearTimeout(this.debounceTimeout);
+  //     this.debounceTimeout = setTimeout(() => {
+  //       this.searchKeyWords = this.inputSearchKeyWords;
+  //     }, 600);
+  //   },
+  //   toggleFullDescription() {
+  //     this.showFullDescription = !this.showFullDescription;
+  //     if (this.showFullDescription) {
+  //       this.$store.commit('enableScrolling', false);
+  //     } else {
+  //       this.$store.commit('enableScrolling', true);
+  //     }
+  //   },
+  // },
 };
 </script>
 
@@ -683,7 +684,7 @@ export default {
   background-image: linear-gradient(to left, #92fe9d 0%, #00c9ff 100%);
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   .gradient-radar {
     background-image: linear-gradient(to left, #92fe9d 0%, #00c9ff 100%);
   }
@@ -861,7 +862,7 @@ export default {
   }
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   .search-box {
     .active {
       input,
@@ -923,7 +924,7 @@ export default {
   }
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   .search-box-likepage {
     .active {
       input,

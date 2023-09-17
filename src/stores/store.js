@@ -311,7 +311,7 @@ export const useStore = defineStore("store", {
 // 如果 pinia 实例无法自动注入，您必须手动将其提供给 useStore() 函数。
 
 const store = useStore(pinia());
-console.log(store);
+// console.log(store);
 // console.log(store.showToast());
 // console.log(store().state);
 if ([undefined, null].includes(store.settings.lang)) {

@@ -1,0 +1,13 @@
+{
+  "name": "re-yesplay",
+  "version": "0.0.1",
+  "description": "mobile YesPlayMusic",
+  "author": "ycte <114587040+ycte@users.noreply.github.com>",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/app": "^5.0.0",
+    "@capacitor/cli": "^5.0.0",
+    "@capacitor/core": "^5.0.0"
+  }
+}

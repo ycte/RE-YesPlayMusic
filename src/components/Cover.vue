@@ -111,7 +111,7 @@ export default {
         playlist: player.playPlaylistByID,
         artist: player.playArtistByID,
       };
-      console.log(playActions);
+      // console.log(playActions);
       playActions[this.type].bind(player)(this.id);
       // console.log("playing", this.player);
     },

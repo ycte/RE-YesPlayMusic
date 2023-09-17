@@ -1,5 +1,6 @@
 <template>
-  <div class="login">
+  <span>login username</span>
+  <!-- <div class="login">
     <div>
       <div class="title">{{ $t('login.usernameLogin') }}</div>
       <div class="section">
@@ -49,60 +50,60 @@
         {{ $t('login.confirm') }}
       </ButtonTwoTone>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
-import NProgress from 'nprogress';
-import { search } from '@/api/others';
-import { userPlaylist } from '@/api/user';
-import { throttle } from '@/utils/common';
+// import { mapMutations } from 'vuex';
+// import NProgress from 'nprogress';
+// import { search } from '@/api/others';
+// import { userPlaylist } from '@/api/user';
+// import { throttle } from '@/utils/common';
 
-import ButtonTwoTone from '@/components/ButtonTwoTone.vue';
+// import ButtonTwoTone from '@/components/ButtonTwoTone.vue';
 
 export default {
-  name: 'LoginUsername',
-  components: {
-    ButtonTwoTone,
-  },
-  data() {
-    return {
-      keyword: '',
-      result: [],
-      activeUser: {},
-    };
-  },
-  created() {
-    NProgress.done();
-  },
-  methods: {
-    ...mapMutations(['updateData']),
-    search() {
-      if (!this.keyword) return;
-      search({ keywords: this.keyword, limit: 9, type: 1002 }).then(data => {
-        this.result = data.result.userprofiles;
-        this.activeUser = this.result[0];
-      });
-    },
-    confirm() {
-      this.updateData({ key: 'user', value: this.activeUser });
-      this.updateData({ key: 'loginMode', value: 'username' });
-      userPlaylist({
-        uid: this.activeUser.userId,
-        limit: 1,
-      }).then(data => {
-        this.updateData({
-          key: 'likedSongPlaylistID',
-          value: data.playlist[0].id,
-        });
-        this.$router.push({ path: '/library' });
-      });
-    },
-    throttleSearch: throttle(function () {
-      this.search();
-    }, 500),
-  },
+  name: "LoginUsername",
+  // components: {
+  //   ButtonTwoTone,
+  // },
+  // data() {
+  //   return {
+  //     keyword: '',
+  //     result: [],
+  //     activeUser: {},
+  //   };
+  // },
+  // created() {
+  //   NProgress.done();
+  // },
+  // methods: {
+  //   ...mapMutations(['updateData']),
+  //   search() {
+  //     if (!this.keyword) return;
+  //     search({ keywords: this.keyword, limit: 9, type: 1002 }).then(data => {
+  //       this.result = data.result.userprofiles;
+  //       this.activeUser = this.result[0];
+  //     });
+  //   },
+  //   confirm() {
+  //     this.updateData({ key: 'user', value: this.activeUser });
+  //     this.updateData({ key: 'loginMode', value: 'username' });
+  //     userPlaylist({
+  //       uid: this.activeUser.userId,
+  //       limit: 1,
+  //     }).then(data => {
+  //       this.updateData({
+  //         key: 'likedSongPlaylistID',
+  //         value: data.playlist[0].id,
+  //       });
+  //       this.$router.push({ path: '/library' });
+  //     });
+  //   },
+  //   throttleSearch: throttle(function () {
+  //     this.search();
+  //   }, 500),
+  // },
 };
 </script>
 

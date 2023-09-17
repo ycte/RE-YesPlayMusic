@@ -1,5 +1,6 @@
 <template>
-  <div class="mv-page">
+  <span>mv</span>
+  <!-- <div class="mv-page">
     <div class="current-video">
       <div class="video">
         <video ref="videoPlayer" class="plyr"></video>
@@ -39,125 +40,125 @@
         $t('contextMenu.openInBrowser')
       }}</div>
     </ContextMenu>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { mvDetail, mvUrl, simiMv, likeAMV } from '@/api/mv';
-import { isAccountLoggedIn } from '@/utils/auth';
-import NProgress from 'nprogress';
-import locale from '@/locale';
-import '@/assets/css/plyr.css';
-import Plyr from 'plyr';
+// import { mvDetail, mvUrl, simiMv, likeAMV } from '@/api/mv';
+// import { isAccountLoggedIn } from '@/utils/auth';
+// import NProgress from 'nprogress';
+// import locale from '@/locale';
+// import '@/assets/css/plyr.css';
+// import Plyr from 'plyr';
 
-import ButtonIcon from '@/components/ButtonIcon.vue';
-import ContextMenu from '@/components/ContextMenu.vue';
-import MvRow from '@/components/MvRow.vue';
-import { mapActions } from 'vuex';
+// import ButtonIcon from '@/components/ButtonIcon.vue';
+// import ContextMenu from '@/components/ContextMenu.vue';
+// import MvRow from '@/components/MvRow.vue';
+// import { mapActions } from 'vuex';
 
 export default {
-  name: 'mv',
-  components: {
-    MvRow,
-    ButtonIcon,
-    ContextMenu,
-  },
-  beforeRouteUpdate(to, from, next) {
-    this.getData(to.params.id);
-    next();
-  },
-  data() {
-    return {
-      mv: {
-        url: '',
-        data: {
-          name: '',
-          artistName: '',
-          playCount: '',
-          publishTime: '',
-        },
-      },
-      player: null,
-      simiMvs: [],
-    };
-  },
-  mounted() {
-    let videoOptions = {
-      settings: ['quality'],
-      autoplay: false,
-      quality: {
-        default: 1080,
-        options: [1080, 720, 480, 240],
-      },
-    };
-    if (this.$route.query.autoplay === 'true') videoOptions.autoplay = true;
-    this.player = new Plyr(this.$refs.videoPlayer, videoOptions);
-    this.player.volume = this.$store.state.player.volume;
-    this.player.on('playing', () => {
-      this.$store.state.player.pause();
-    });
-    this.getData(this.$route.params.id);
-    console.log('网易云你这mv音频码率也太糊了吧🙄');
-  },
-  methods: {
-    ...mapActions(['showToast']),
-    getData(id) {
-      mvDetail(id).then(data => {
-        this.mv = data;
-        let requests = data.data.brs.map(br => {
-          return mvUrl({ id, r: br.br });
-        });
-        Promise.all(requests).then(results => {
-          let sources = results.map(result => {
-            return {
-              src: result.data.url.replace(/^http:/, 'https:'),
-              type: 'video/mp4',
-              size: result.data.r,
-            };
-          });
-          this.player.source = {
-            type: 'video',
-            title: this.mv.data.name,
-            sources: sources,
-            poster: this.mv.data.cover.replace(/^http:/, 'https:'),
-          };
-          NProgress.done();
-        });
-      });
-      simiMv(id).then(data => {
-        this.simiMvs = data.mvs;
-      });
-    },
-    likeMV() {
-      if (!isAccountLoggedIn()) {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      likeAMV({
-        mvid: this.mv.data.id,
-        t: this.mv.subed ? 0 : 1,
-      }).then(data => {
-        if (data.code === 200) this.mv.subed = !this.mv.subed;
-      });
-    },
-    openMenu(e) {
-      this.$refs.mvMenu.openMenu(e);
-    },
-    copyUrl(id) {
-      let showToast = this.showToast;
-      this.$copyText(`https://music.163.com/#/mv?id=${id}`)
-        .then(function () {
-          showToast(locale.t('toast.copied'));
-        })
-        .catch(error => {
-          showToast(`${locale.t('toast.copyFailed')}${error}`);
-        });
-    },
-    openInBrowser(id) {
-      const url = `https://music.163.com/#/mv?id=${id}`;
-      window.open(url);
-    },
-  },
+  name: "mvView",
+  // components: {
+  //   MvRow,
+  //   ButtonIcon,
+  //   ContextMenu,
+  // },
+  // beforeRouteUpdate(to, from, next) {
+  //   this.getData(to.params.id);
+  //   next();
+  // },
+  // data() {
+  //   return {
+  //     mv: {
+  //       url: '',
+  //       data: {
+  //         name: '',
+  //         artistName: '',
+  //         playCount: '',
+  //         publishTime: '',
+  //       },
+  //     },
+  //     player: null,
+  //     simiMvs: [],
+  //   };
+  // },
+  // mounted() {
+  //   let videoOptions = {
+  //     settings: ['quality'],
+  //     autoplay: false,
+  //     quality: {
+  //       default: 1080,
+  //       options: [1080, 720, 480, 240],
+  //     },
+  //   };
+  //   if (this.$route.query.autoplay === 'true') videoOptions.autoplay = true;
+  //   this.player = new Plyr(this.$refs.videoPlayer, videoOptions);
+  //   this.player.volume = this.$store.state.player.volume;
+  //   this.player.on('playing', () => {
+  //     this.$store.state.player.pause();
+  //   });
+  //   this.getData(this.$route.params.id);
+  //   console.log('网易云你这mv音频码率也太糊了吧🙄');
+  // },
+  // methods: {
+  //   ...mapActions(['showToast']),
+  //   getData(id) {
+  //     mvDetail(id).then(data => {
+  //       this.mv = data;
+  //       let requests = data.data.brs.map(br => {
+  //         return mvUrl({ id, r: br.br });
+  //       });
+  //       Promise.all(requests).then(results => {
+  //         let sources = results.map(result => {
+  //           return {
+  //             src: result.data.url.replace(/^http:/, 'https:'),
+  //             type: 'video/mp4',
+  //             size: result.data.r,
+  //           };
+  //         });
+  //         this.player.source = {
+  //           type: 'video',
+  //           title: this.mv.data.name,
+  //           sources: sources,
+  //           poster: this.mv.data.cover.replace(/^http:/, 'https:'),
+  //         };
+  //         NProgress.done();
+  //       });
+  //     });
+  //     simiMv(id).then(data => {
+  //       this.simiMvs = data.mvs;
+  //     });
+  //   },
+  //   likeMV() {
+  //     if (!isAccountLoggedIn()) {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     likeAMV({
+  //       mvid: this.mv.data.id,
+  //       t: this.mv.subed ? 0 : 1,
+  //     }).then(data => {
+  //       if (data.code === 200) this.mv.subed = !this.mv.subed;
+  //     });
+  //   },
+  //   openMenu(e) {
+  //     this.$refs.mvMenu.openMenu(e);
+  //   },
+  //   copyUrl(id) {
+  //     let showToast = this.showToast;
+  //     this.$copyText(`https://music.163.com/#/mv?id=${id}`)
+  //       .then(function () {
+  //         showToast(locale.t('toast.copied'));
+  //       })
+  //       .catch(error => {
+  //         showToast(`${locale.t('toast.copyFailed')}${error}`);
+  //       });
+  //   },
+  //   openInBrowser(id) {
+  //     const url = `https://music.163.com/#/mv?id=${id}`;
+  //     window.open(url);
+  //   },
+  // },
 };
 </script>
 <style lang="scss" scoped>
