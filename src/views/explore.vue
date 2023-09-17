@@ -1,5 +1,7 @@
 <template>
-  <div class="index-row first-row">发现</div>
+  <!-- <div class="index-row first-row">发现</div> -->
+  <TopTitle style="height: 85px" />
+  <div style="margin-top: 12px">还在做🤪🤪🤪</div>
   <!-- <div class="explore-page">
     <h1>{{ $t("explore.explore") }}</h1>
     <div class="buttons">
@@ -66,6 +68,7 @@
 </template>
 
 <script>
+import TopTitle from "src/components/TopTitle.vue";
 // import { mapState, mapMutations } from "vuex";
 // import NProgress from "nprogress";
 // import { topPlaylist, highQualityPlaylist, toplists } from "@/api/playlist";
@@ -79,6 +82,7 @@
 export default {
   name: "ExploreView",
   components: {
+    TopTitle,
     // CoverRow,
     // ButtonTwoTone,
     // SvgIcon,

@@ -1,6 +1,5 @@
 <template>
-  <!-- TODO: top-title 独立组件 -->
-  <div class="top-title">首页</div>
+  <TopTitle />
   <div v-show="show" class="home">
     <!-- <div
       v-if="settings.showPlaylistsByAppleMusic !== false"
@@ -73,6 +72,7 @@
 </template>
 
 <script>
+import TopTitle from "src/components/TopTitle.vue";
 import { toplists } from "src/api/playlist";
 import { toplistOfArtists } from "src/api/artist";
 import { newAlbums } from "src/api/album";
@@ -89,6 +89,7 @@ import CoverRow from "src/components/CoverRow.vue";
 export default {
   name: "HomeView",
   components: {
+    TopTitle,
     CoverRow,
     // FMCard,
     // DailyTracksCard
@@ -178,21 +179,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.top-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 45px;
-  margin-bottom: -25px;
-  font-size: 38px;
-  font-weight: 700;
-  color: var(--color-text);
-  a {
-    font-size: 13px;
-    font-weight: 600;
-    opacity: 0.68;
-  }
-}
+// .home {
+//   overflow: hidden;
+// }
 .index-row {
   margin-top: 34px;
 }

@@ -1,5 +1,7 @@
 <template>
-  <div v-show="show" ref="library">
+  <TopTitle style="height: 85px" />
+  <div style="margin-top: 12px">还在做🤪🤪🤪</div>
+  <!-- <div v-show="show" ref="library">
     <h1>
       <img
         class="avatar"
@@ -210,23 +212,24 @@
         $t('contextMenu.cardiacMode')
       }}</div>
     </ContextMenu>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex';
-import { randomNum, dailyTask } from '@/utils/common';
-import { isAccountLoggedIn } from '@/utils/auth';
-import { uploadSong } from '@/api/user';
-import { getLyric } from '@/api/track';
-import NProgress from 'nprogress';
-import locale from '@/locale';
+import TopTitle from "src/components/TopTitle.vue";
+// import { mapActions, mapMutations, mapState } from 'vuex';
+// import { randomNum, dailyTask } from '@/utils/common';
+// import { isAccountLoggedIn } from '@/utils/auth';
+// import { uploadSong } from '@/api/user';
+// import { getLyric } from '@/api/track';
+// import NProgress from 'nprogress';
+// import locale from '@/locale';
 
-import ContextMenu from '@/components/ContextMenu.vue';
-import TrackList from '@/components/TrackList.vue';
-import CoverRow from '@/components/CoverRow.vue';
-import SvgIcon from '@/components/SvgIcon.vue';
-import MvRow from '@/components/MvRow.vue';
+// import ContextMenu from '@/components/ContextMenu.vue';
+// import TrackList from '@/components/TrackList.vue';
+// import CoverRow from '@/components/CoverRow.vue';
+// import SvgIcon from '@/components/SvgIcon.vue';
+// import MvRow from '@/components/MvRow.vue';
 
 /**
  * Pick the lyric part from a string formed in `[timecode] lyric`.
@@ -235,185 +238,192 @@ import MvRow from '@/components/MvRow.vue';
  * @returns {string} The lyric part
  */
 function extractLyricPart(rawLyric) {
-  return rawLyric.split(']').pop().trim();
+  return rawLyric.split("]").pop().trim();
 }
 
 export default {
-  name: 'Library',
-  components: { SvgIcon, CoverRow, TrackList, MvRow, ContextMenu },
+  name: "LibraryView",
+  components: {
+    TopTitle,
+    // SvgIcon,
+    // CoverRow,
+    // TrackList,
+    // MvRow,
+    // ContextMenu,
+  },
   data() {
     return {
       show: false,
       likedSongs: [],
       lyric: undefined,
-      currentTab: 'playlists',
-      playHistoryMode: 'week',
+      currentTab: "playlists",
+      playHistoryMode: "week",
     };
   },
-  computed: {
-    ...mapState(['data', 'liked']),
-    /**
-     * @returns {string[]}
-     */
-    pickedLyric() {
-      /** @type {string?} */
-      const lyric = this.lyric;
+  // computed: {
+  //   ...mapState(['data', 'liked']),
+  //   /**
+  //    * @returns {string[]}
+  //    */
+  //   pickedLyric() {
+  //     /** @type {string?} */
+  //     const lyric = this.lyric;
 
-      // Returns [] if we got no lyrics.
-      if (!lyric) return [];
+  //     // Returns [] if we got no lyrics.
+  //     if (!lyric) return [];
 
-      const lyricLine = lyric
-        .split('\n')
-        .filter(line => !line.includes('作词') && !line.includes('作曲'));
+  //     const lyricLine = lyric
+  //       .split('\n')
+  //       .filter(line => !line.includes('作词') && !line.includes('作曲'));
 
-      // Pick 3 or fewer lyrics based on the lyric lines.
-      const lyricsToPick = Math.min(lyricLine.length, 3);
+  //     // Pick 3 or fewer lyrics based on the lyric lines.
+  //     const lyricsToPick = Math.min(lyricLine.length, 3);
 
-      // The upperBound of the lyric line to pick
-      const randomUpperBound = lyricLine.length - lyricsToPick;
-      const startLyricLineIndex = randomNum(0, randomUpperBound - 1);
+  //     // The upperBound of the lyric line to pick
+  //     const randomUpperBound = lyricLine.length - lyricsToPick;
+  //     const startLyricLineIndex = randomNum(0, randomUpperBound - 1);
 
-      // Pick lyric lines to render.
-      return lyricLine
-        .slice(startLyricLineIndex, startLyricLineIndex + lyricsToPick)
-        .map(extractLyricPart);
-    },
-    playlistFilter() {
-      return this.data.libraryPlaylistFilter || 'all';
-    },
-    filterPlaylists() {
-      const playlists = this.liked.playlists.slice(1);
-      const userId = this.data.user.userId;
-      if (this.playlistFilter === 'mine') {
-        return playlists.filter(p => p.creator.userId === userId);
-      } else if (this.playlistFilter === 'liked') {
-        return playlists.filter(p => p.creator.userId !== userId);
-      }
-      return playlists;
-    },
-    playHistoryList() {
-      if (this.show && this.playHistoryMode === 'week') {
-        return this.liked.playHistory.weekData;
-      }
-      if (this.show && this.playHistoryMode === 'all') {
-        return this.liked.playHistory.allData;
-      }
-      return [];
-    },
-  },
-  created() {
-    setTimeout(() => {
-      if (!this.show) NProgress.start();
-    }, 1000);
-    this.loadData();
-  },
-  activated() {
-    this.$parent.$refs.scrollbar.restorePosition();
-    this.loadData();
-    dailyTask();
-  },
-  methods: {
-    ...mapActions(['showToast']),
-    ...mapMutations(['updateModal', 'updateData']),
-    loadData() {
-      if (this.liked.songsWithDetails.length > 0) {
-        NProgress.done();
-        this.show = true;
-        this.$store.dispatch('fetchLikedSongsWithDetails');
-        this.getRandomLyric();
-      } else {
-        this.$store.dispatch('fetchLikedSongsWithDetails').then(() => {
-          NProgress.done();
-          this.show = true;
-          this.getRandomLyric();
-        });
-      }
-      this.$store.dispatch('fetchLikedSongs');
-      this.$store.dispatch('fetchLikedPlaylist');
-      this.$store.dispatch('fetchLikedAlbums');
-      this.$store.dispatch('fetchLikedArtists');
-      this.$store.dispatch('fetchLikedMVs');
-      this.$store.dispatch('fetchCloudDisk');
-      this.$store.dispatch('fetchPlayHistory');
-    },
-    playLikedSongs() {
-      this.$store.state.player.playPlaylistByID(
-        this.liked.playlists[0].id,
-        'first',
-        true
-      );
-    },
-    playIntelligenceList() {
-      this.$store.state.player.playIntelligenceListById(
-        this.liked.playlists[0].id,
-        'first',
-        true
-      );
-    },
-    updateCurrentTab(tab) {
-      if (!isAccountLoggedIn() && tab !== 'playlists') {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      this.currentTab = tab;
-      this.$parent.$refs.main.scrollTo({ top: 375, behavior: 'smooth' });
-    },
-    goToLikedSongsList() {
-      this.$router.push({ path: '/library/liked-songs' });
-    },
-    getRandomLyric() {
-      if (this.liked.songs.length === 0) return;
-      getLyric(
-        this.liked.songs[randomNum(0, this.liked.songs.length - 1)]
-      ).then(data => {
-        if (data.lrc !== undefined) {
-          const isInstrumental = data.lrc.lyric
-            .split('\n')
-            .filter(l => l.includes('纯音乐，请欣赏'));
-          if (isInstrumental.length === 0) {
-            this.lyric = data.lrc.lyric;
-          }
-        }
-      });
-    },
-    openAddPlaylistModal() {
-      if (!isAccountLoggedIn()) {
-        this.showToast(locale.t('toast.needToLogin'));
-        return;
-      }
-      this.updateModal({
-        modalName: 'newPlaylistModal',
-        key: 'show',
-        value: true,
-      });
-    },
-    openPlaylistTabMenu(e) {
-      this.$refs.playlistTabMenu.openMenu(e);
-    },
-    openPlayModeTabMenu(e) {
-      this.$refs.playModeTabMenu.openMenu(e);
-    },
-    changePlaylistFilter(type) {
-      this.updateData({ key: 'libraryPlaylistFilter', value: type });
-      window.scrollTo({ top: 375, behavior: 'smooth' });
-    },
-    selectUploadFiles() {
-      this.$refs.cloudDiskUploadInput.click();
-    },
-    uploadSongToCloudDisk(e) {
-      const files = e.target.files;
-      uploadSong(files[0]).then(result => {
-        if (result.code === 200) {
-          let newCloudDisk = this.liked.cloudDisk;
-          newCloudDisk.unshift(result.privateCloud);
-          this.$store.commit('updateLikedXXX', {
-            name: 'cloudDisk',
-            data: newCloudDisk,
-          });
-        }
-      });
-    },
-  },
+  //     // Pick lyric lines to render.
+  //     return lyricLine
+  //       .slice(startLyricLineIndex, startLyricLineIndex + lyricsToPick)
+  //       .map(extractLyricPart);
+  //   },
+  //   playlistFilter() {
+  //     return this.data.libraryPlaylistFilter || 'all';
+  //   },
+  //   filterPlaylists() {
+  //     const playlists = this.liked.playlists.slice(1);
+  //     const userId = this.data.user.userId;
+  //     if (this.playlistFilter === 'mine') {
+  //       return playlists.filter(p => p.creator.userId === userId);
+  //     } else if (this.playlistFilter === 'liked') {
+  //       return playlists.filter(p => p.creator.userId !== userId);
+  //     }
+  //     return playlists;
+  //   },
+  //   playHistoryList() {
+  //     if (this.show && this.playHistoryMode === 'week') {
+  //       return this.liked.playHistory.weekData;
+  //     }
+  //     if (this.show && this.playHistoryMode === 'all') {
+  //       return this.liked.playHistory.allData;
+  //     }
+  //     return [];
+  //   },
+  // },
+  // created() {
+  //   setTimeout(() => {
+  //     if (!this.show) NProgress.start();
+  //   }, 1000);
+  //   this.loadData();
+  // },
+  // activated() {
+  //   this.$parent.$refs.scrollbar.restorePosition();
+  //   this.loadData();
+  //   dailyTask();
+  // },
+  // methods: {
+  //   ...mapActions(['showToast']),
+  //   ...mapMutations(['updateModal', 'updateData']),
+  //   loadData() {
+  //     if (this.liked.songsWithDetails.length > 0) {
+  //       NProgress.done();
+  //       this.show = true;
+  //       this.$store.dispatch('fetchLikedSongsWithDetails');
+  //       this.getRandomLyric();
+  //     } else {
+  //       this.$store.dispatch('fetchLikedSongsWithDetails').then(() => {
+  //         NProgress.done();
+  //         this.show = true;
+  //         this.getRandomLyric();
+  //       });
+  //     }
+  //     this.$store.dispatch('fetchLikedSongs');
+  //     this.$store.dispatch('fetchLikedPlaylist');
+  //     this.$store.dispatch('fetchLikedAlbums');
+  //     this.$store.dispatch('fetchLikedArtists');
+  //     this.$store.dispatch('fetchLikedMVs');
+  //     this.$store.dispatch('fetchCloudDisk');
+  //     this.$store.dispatch('fetchPlayHistory');
+  //   },
+  //   playLikedSongs() {
+  //     this.$store.state.player.playPlaylistByID(
+  //       this.liked.playlists[0].id,
+  //       'first',
+  //       true
+  //     );
+  //   },
+  //   playIntelligenceList() {
+  //     this.$store.state.player.playIntelligenceListById(
+  //       this.liked.playlists[0].id,
+  //       'first',
+  //       true
+  //     );
+  //   },
+  //   updateCurrentTab(tab) {
+  //     if (!isAccountLoggedIn() && tab !== 'playlists') {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     this.currentTab = tab;
+  //     this.$parent.$refs.main.scrollTo({ top: 375, behavior: 'smooth' });
+  //   },
+  //   goToLikedSongsList() {
+  //     this.$router.push({ path: '/library/liked-songs' });
+  //   },
+  //   getRandomLyric() {
+  //     if (this.liked.songs.length === 0) return;
+  //     getLyric(
+  //       this.liked.songs[randomNum(0, this.liked.songs.length - 1)]
+  //     ).then(data => {
+  //       if (data.lrc !== undefined) {
+  //         const isInstrumental = data.lrc.lyric
+  //           .split('\n')
+  //           .filter(l => l.includes('纯音乐，请欣赏'));
+  //         if (isInstrumental.length === 0) {
+  //           this.lyric = data.lrc.lyric;
+  //         }
+  //       }
+  //     });
+  //   },
+  //   openAddPlaylistModal() {
+  //     if (!isAccountLoggedIn()) {
+  //       this.showToast(locale.t('toast.needToLogin'));
+  //       return;
+  //     }
+  //     this.updateModal({
+  //       modalName: 'newPlaylistModal',
+  //       key: 'show',
+  //       value: true,
+  //     });
+  //   },
+  //   openPlaylistTabMenu(e) {
+  //     this.$refs.playlistTabMenu.openMenu(e);
+  //   },
+  //   openPlayModeTabMenu(e) {
+  //     this.$refs.playModeTabMenu.openMenu(e);
+  //   },
+  //   changePlaylistFilter(type) {
+  //     this.updateData({ key: 'libraryPlaylistFilter', value: type });
+  //     window.scrollTo({ top: 375, behavior: 'smooth' });
+  //   },
+  //   selectUploadFiles() {
+  //     this.$refs.cloudDiskUploadInput.click();
+  //   },
+  //   uploadSongToCloudDisk(e) {
+  //     const files = e.target.files;
+  //     uploadSong(files[0]).then(result => {
+  //       if (result.code === 200) {
+  //         let newCloudDisk = this.liked.cloudDisk;
+  //         newCloudDisk.unshift(result.privateCloud);
+  //         this.$store.commit('updateLikedXXX', {
+  //           name: 'cloudDisk',
+  //           data: newCloudDisk,
+  //         });
+  //       }
+  //     });
+  //   },
+  // },
 };
 </script>
 

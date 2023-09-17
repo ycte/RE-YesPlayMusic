@@ -13,6 +13,11 @@
         /></button-icon> -->
       </div>
       <!-- TODO: title -->
+      <div class="navigation-title">
+        <div class="title">
+          {{ titleLocale !== "title" ? $t(titleLocale) : "title" }}
+        </div>
+      </div>
       <!-- <div class="navigation-links">
         <router-link to="/" :class="{ active: $route.name === 'home' }">{{
           $t('nav.home')
@@ -119,12 +124,20 @@ export default {
   computed: {
     ...mapState(useStore, ["settings", "data"]),
     showBack() {
-      console.log(this.$route.name);
+      // console.log(this.$route.name);
       return (
         this.$route.name !== "home" &&
         this.$route.name !== "explore" &&
         this.$route.name !== "library"
       );
+    },
+    titleLocale() {
+      // console.log("navbar title", this.$route.name);
+      if (["home", "explore", "library"].includes(this.$route.name)) {
+        return "nav." + this.$route.name;
+      }
+
+      return "title";
     },
     isLooseLoggedIn() {
       return isLooseLoggedIn();
@@ -247,6 +260,15 @@ nav.has-custom-titlebar {
   }
 }
 
+.navigation-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: black;
+}
 .navigation-links {
   flex: 1;
   display: flex;

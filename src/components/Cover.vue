@@ -1,10 +1,11 @@
 <template>
+  <!-- TODO: @click="clickCoverToPlay ? play() : goTo()" -->
   <div
     class="cover"
     :class="{ 'cover-hover': coverHover }"
     @mouseover="focus = true"
     @mouseleave="focus = false"
-    @click="clickCoverToPlay ? play() : goTo()"
+    @click="clickCoverToPlay ? play() : play()"
   >
     <div class="cover-container">
       <div class="shade">

@@ -145,6 +145,7 @@ export default {
 }
 .scroll {
   height: 100%;
+  // width: 90%;
 }
 .item {
   width: 155px;
@@ -202,7 +203,7 @@ a {
   }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 335px) {
   .item .text .title {
     font-size: 14px;
   }

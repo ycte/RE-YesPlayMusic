@@ -1,67 +1,30 @@
 <template>
   <div id="app">
-    <!-- <Navbar v-if="showNavbar" /> -->
-    <!-- TODO: root 的样式搬到 layout 里去 -->
     <router-view id="root" />
-    <!-- <transition name="slide-up"> -->
-    <!-- <Navbar /> -->
+    <!-- TODO: transition -->
     <Player v-if="enablePlayer" v-show="showPlayer" ref="player" />
-    <!-- </transition> -->
-    <!-- TODO: 分离出独立组件，学 Player 的做法 -->
-    <div class="navigation-links">
-      <div class="navlink-items">
-        <div class="navlink-item">
-          <q-icon :name="ionCaretForwardCircle" class="svg-icon"></q-icon>
-          <router-link to="/" :class="{ active: $route.name === 'home' }">
-            {{ $t("nav.home") }}
-          </router-link>
-        </div>
-        <div class="navlink-item">
-          <q-icon :name="ionCaretForwardCircle" class="svg-icon"></q-icon>
-          <router-link
-            to="/explore"
-            :class="{ active: $route.name === 'explore' }"
-          >
-            {{ $t("nav.explore") }}
-          </router-link>
-        </div>
-        <div class="navlink-item">
-          <q-icon :name="ionCaretForwardCircle" class="svg-icon"></q-icon>
-          <router-link
-            to="/library"
-            :class="{ active: $route.name === 'library' }"
-          >
-            {{ $t("nav.library") }}
-          </router-link>
-        </div>
-      </div>
-    </div>
+    <NavBarButton v-show="showNavbar" />
   </div>
 </template>
 
 <script>
-// import Navbar from "src/components/Navbar.vue";
 import { defineComponent } from "vue";
 import { isAccountLoggedIn, isLooseLoggedIn } from "src/utils/auth";
 import { mapActions, mapState } from "pinia";
-import pinia from "src/stores";
 import useStore from "src/stores/store";
 import Player from "src/components/Player.vue";
-import { ionCaretForwardCircle } from "@quasar/extras/ionicons-v7";
-// const store = useStore(pinia());
-// console.log(useStore());
+import NavBarButton from "./components/NavBarButton.vue";
 
 export default defineComponent({
   name: "App",
   components: {
     Player,
-    // Navbar,
+    NavBarButton,
   },
   data() {
     return {
       // isElectron: process.env.IS_ELECTRON, // true || undefined
       userSelectNone: false,
-      ionCaretForwardCircle,
     };
   },
   computed: {
@@ -153,62 +116,57 @@ export default defineComponent({
 
 <style>
 #root {
+  width: 95%;
   margin-left: 5%;
-  margin-top: 0px;
   margin-right: 5%;
   margin-bottom: 120px;
-  /* background: black; */
 }
 #app {
-  a {
-    /* //去掉下换线 */
-    text-decoration: none;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* text-align: center; */
+  color: #2c3e50;
+  /* margin-top: 60px; */
+}
+/* .container {
+  width: 400px;
+  height: 300px;
+  margin: 30px auto;
+  box-shadow: 0 0 2px gray;
+  padding: 20px;
+  overflow: scroll;
+}
 
-    /* //文字颜色更改 */
-    color: black;
-  }
-  .router-link-exact-active {
-    color: black;
-  }
-  .router-link-active {
-    color: black;
-  }
-  a:link {
-    color: black;
-  }
-  a:visited {
-    color: black;
-  }
-  a:hover {
-    color: black;
-  }
-  a:active {
-    color: black;
-  }
+.scroll {
+  width: 1400px;
+  height: 1300px;
 }
-.navigation-links {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+
+.container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
-.navlink-items {
-  display: grid;
-  width: 100%;
-  height: 50px;
-  text-align: center;
-  /* justify-content: space-around; */
-  backdrop-filter: saturate(180%) blur(30px);
-  background-color: var(--color-navbar-bg);
-  grid-template-columns: repeat(3, 1fr);
-  .navlink-item {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    /* vertical-align: middle; */
-  }
+
+.container::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom right, #4d7fff 0%, #1a56ff 100%);
+  border-radius: 5px;
 }
+
+.container::-webkit-scrollbar-track {
+  background-color: #ddd;
+  border: 1px solid #ccc;
+}
+
+.container::-webkit-scrollbar-button {
+  background-color: #4d7fff;
+  border-radius: 5px;
+}
+
+.container::-webkit-scrollbar-button:hover {
+  background-color: #999999;
+} */
+
 .q-icon {
   width: 20px;
   height: 20px;

@@ -17,7 +17,7 @@ button {
   background: transparent;
   margin: 4px;
   border: none;
-  border-radius: 25%;
+  border-radius: 7px;
   transition: 0.2s;
   .svg-icon {
     // color: var(--color-text);
@@ -34,6 +34,7 @@ button {
   }
   &:active {
     transform: scale(0.92);
+    background: rgba($color: #d0d0d0, $alpha: 1);
   }
 }
 </style>
