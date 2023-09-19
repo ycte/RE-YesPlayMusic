@@ -1,0 +1,1 @@
+import{_ as e,K as a,L as t}from"./index.0f540ad1.js";const _={name:"PlaylistView"};function s(l,n,p,r,o,c){return a(),t("span",null,"playlist")}var d=e(_,[["render",s],["__scopeId","data-v-94294954"]]);export{d as default};

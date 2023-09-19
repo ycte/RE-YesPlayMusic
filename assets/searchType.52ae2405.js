@@ -1,0 +1,1 @@
+import{_ as e,K as a,L as _}from"./index.0f540ad1.js";const r={name:"SearchType"};function s(t,c,p,n,o,d){return a(),_("span",null,"search type")}var u=e(r,[["render",s],["__scopeId","data-v-02e74710"]]);export{u as default};

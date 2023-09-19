@@ -1,0 +1,1 @@
+import{_ as t,K as e,L as a}from"./index.0f540ad1.js";const _={name:"ArtistMV"};function r(s,n,o,c,p,d){return e(),a("span",null,"artist MV")}var l=t(_,[["render",r],["__scopeId","data-v-7d337f03"]]);export{l as default};

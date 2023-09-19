@@ -1,0 +1,1 @@
+import{_ as e,K as _,L as o}from"./index.0f540ad1.js";const t={name:"LoginView"},a={class:"login"};function n(s,c,r,i,d,p){return _(),o("div",a)}var u=e(t,[["render",n],["__scopeId","data-v-a9ee5d00"]]);export{u as default};

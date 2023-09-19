@@ -1,0 +1,1 @@
+import{_ as a,K as e,L as _}from"./index.0f540ad1.js";const r={name:"DailyTracks"};function s(c,t,n,o,d,l){return e(),_("span",null,"dailyTracks")}var i=a(r,[["render",s],["__scopeId","data-v-1651d6c8"]]);export{i as default};

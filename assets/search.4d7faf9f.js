@@ -1,0 +1,1 @@
+import{_ as e,K as a,L as _}from"./index.0f540ad1.js";const r={name:"SearchView"};function s(c,t,n,o,p,d){return a(),_("span",null,"search")}var u=e(r,[["render",s],["__scopeId","data-v-560656fe"]]);export{u as default};
