@@ -5,6 +5,7 @@
   "description": "A third party music player for Netease Music",
   "author": "qier222<qier222@outlook.com>",
   "scripts": {
+<<<<<<< Updated upstream
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -24,6 +25,14 @@
   "main": "background.js",
   "engines": {
     "node": "14 || 16"
+=======
+    "lint": "eslint --ext .js,.vue ./",
+    "format": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "deploy": "vercel"
+>>>>>>> Stashed changes
   },
   "dependencies": {
     "@unblockneteasemusic/rust-napi": "^0.4.0",

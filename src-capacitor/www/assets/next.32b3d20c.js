@@ -1,0 +1,1 @@
+import{_ as e,K as t,L as _}from"./index.458a6082.js";const n={name:"NextView"};function a(c,r,s,o,p,d){return t(),_("span",null,"next")}var u=e(n,[["render",a],["__scopeId","data-v-8dbcec68"]]);export{u as default};

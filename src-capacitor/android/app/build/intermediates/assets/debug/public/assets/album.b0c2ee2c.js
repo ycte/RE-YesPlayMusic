@@ -1,0 +1,1 @@
+import{_ as a,N as s,O as _,K as t,L as o}from"./index.458a6082.js";const r={name:"AlbumView"},c={class:"album-page"};function n(e,l,p,u,i,d){return s((t(),o("div",c,null,512)),[[_,e.show]])}var v=a(r,[["render",n],["__scopeId","data-v-48fa5121"]]);export{v as default};

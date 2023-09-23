@@ -158,7 +158,12 @@ export default {
 
 <style lang="scss" scoped>
 .index-row {
+<<<<<<< Updated upstream
   margin-top: 54px;
+=======
+  margin-top: 34px;
+  // margin-right: 5%;
+>>>>>>> Stashed changes
 }
 .index-row.first-row {
   margin-top: 32px;
@@ -187,8 +192,27 @@ export default {
     font-size: 13px;
     font-weight: 600;
     opacity: 0.68;
+<<<<<<< Updated upstream
   }
 }
+=======
+    margin-right: 5%;
+  }
+}
+a {
+  /* //去掉下换线 */
+  text-decoration: none;
+  margin-right: 5%;
+  /* //文字颜色更改 */
+  color: black;
+}
+.router-link-exact-active {
+  color: black;
+}
+.router-link-active {
+  color: black;
+}
+>>>>>>> Stashed changes
 
 footer {
   display: flex;

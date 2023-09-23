@@ -1,0 +1,1 @@
+import{_ as e,K as _,L as a}from"./index.458a6082.js";const t={name:"mvView"};function n(r,s,c,o,p,d){return _(),a("span",null,"mv")}var v=e(t,[["render",n],["__scopeId","data-v-0d81d4c6"]]);export{v as default};

@@ -8,7 +8,22 @@ import {
 import { isAccountLoggedIn } from '@/utils/auth';
 
 export function hasListSource() {
+<<<<<<< Updated upstream
   return !state.player.isPersonalFM && state.player.playlistSource.id !== 0;
+=======
+  // console.log(
+  //   "hasListSource",
+  //   state,
+  //   state.player,
+  //   state.player.player.playlistSource,
+  //   state.player.player.isPersonalFM
+  // );
+
+  return (
+    !state.player.player.isPersonalFM &&
+    state.player.player.playlistSource.id !== 0
+  );
+>>>>>>> Stashed changes
 }
 
 export function goToListSource() {

@@ -1,0 +1,6 @@
+org.capacitor.quasar.app.test.app-annotation-experimental-1.3.0-0 C:\Users\a1526\.gradle\caches\transforms-3\c4eb8610416ba9fcff7203d70109fbae\transformed\annotation-experimental-1.3.0\res
+org.capacitor.quasar.app.test.app-core-1.5.0-1 C:\Users\a1526\.gradle\caches\transforms-3\ec985eb774b6e2f8fedbaa0cecaad627\transformed\core-1.5.0\res
+org.capacitor.quasar.app.test.app-androidTest-2 C:\Users\a1526\Documents\vue-project\RE-YesPlayMusic-from0\re-yesplay\src-capacitor\android\app\build\generated\res\resValues\androidTest\debug
+org.capacitor.quasar.app.test.app-mergeDebugAndroidTestResources-3 C:\Users\a1526\Documents\vue-project\RE-YesPlayMusic-from0\re-yesplay\src-capacitor\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+org.capacitor.quasar.app.test.app-mergeDebugAndroidTestResources-4 C:\Users\a1526\Documents\vue-project\RE-YesPlayMusic-from0\re-yesplay\src-capacitor\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+org.capacitor.quasar.app.test.app-merged_res-5 C:\Users\a1526\Documents\vue-project\RE-YesPlayMusic-from0\re-yesplay\src-capacitor\android\app\build\intermediates\merged_res\debugAndroidTest

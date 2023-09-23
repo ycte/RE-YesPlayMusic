@@ -1,0 +1,9 @@
+{
+	"appId": "org.capacitor.quasar.app",
+	"appName": "YesPlayMusic Mobile",
+	"webDir": "www",
+	"server": {
+		"androidScheme": "https",
+		"url": "http://192.168.3.8:9500"
+	}
+}

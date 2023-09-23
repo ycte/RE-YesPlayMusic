@@ -50,8 +50,14 @@ async function deleteExcessCache() {
   }
 }
 
+<<<<<<< Updated upstream
 export function cacheTrackSource(trackInfo, url, bitRate, from = 'netease') {
   if (!process.env.IS_ELECTRON) return;
+=======
+export function cacheTrackSource(trackInfo, url, bitRate, from = "netease") {
+  // if (!process.env.IS_ELECTRON)
+  return;
+>>>>>>> Stashed changes
   const name = trackInfo.name;
   const artist =
     (trackInfo.ar && trackInfo.ar[0]?.name) ||

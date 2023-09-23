@@ -1,0 +1,1 @@
+import{_ as e,K as n,L as o}from"./index.458a6082.js";const c={name:"LoginAccount"};function t(_,a,r,s,p,u){return n(),o("span",null,"login account")}var i=e(c,[["render",t],["__scopeId","data-v-31af6182"]]);export{i as default};

@@ -25,12 +25,21 @@ const UNPLAYABLE_CONDITION = {
   PLAY_PREV_TRACK: 'playPrevTrack',
 };
 
+<<<<<<< Updated upstream
 const electron =
   process.env.IS_ELECTRON === true ? window.require('electron') : null;
 const ipcRenderer =
   process.env.IS_ELECTRON === true ? electron.ipcRenderer : null;
 const delay = ms =>
   new Promise(resolve => {
+=======
+const electron = null;
+// process.env.IS_ELECTRON === true ? window.require("electron") : null;
+const ipcRenderer = null;
+// process.env.IS_ELECTRON === true ? electron.ipcRenderer : null;
+const delay = (ms) =>
+  new Promise((resolve) => {
+>>>>>>> Stashed changes
     setTimeout(() => {
       resolve('');
     }, ms);
@@ -415,8 +424,13 @@ export default class {
     console.debug(`[debug][Player.js] _getAudioSourceFromUnblockMusic`);
 
     if (
+<<<<<<< Updated upstream
       process.env.IS_ELECTRON !== true ||
       store.state.settings.enableUnblockNeteaseMusic === false
+=======
+      // process.env.IS_ELECTRON !== true ||
+      store.settings.enableUnblockNeteaseMusic === false
+>>>>>>> Stashed changes
     ) {
       return null;
     }
@@ -693,8 +707,13 @@ export default class {
   }
   _playDiscordPresence(track, seekTime = 0) {
     if (
+<<<<<<< Updated upstream
       process.env.IS_ELECTRON !== true ||
       store.state.settings.enableDiscordRichPresence === false
+=======
+      // process.env.IS_ELECTRON !== true ||
+      store.settings.enableDiscordRichPresence === false
+>>>>>>> Stashed changes
     ) {
       return null;
     }
@@ -704,8 +723,13 @@ export default class {
   }
   _pauseDiscordPresence(track) {
     if (
+<<<<<<< Updated upstream
       process.env.IS_ELECTRON !== true ||
       store.state.settings.enableDiscordRichPresence === false
+=======
+      // process.env.IS_ELECTRON !== true ||
+      store.settings.enableDiscordRichPresence === false
+>>>>>>> Stashed changes
     ) {
       return null;
     }
@@ -957,9 +981,16 @@ export default class {
   }
 
   sendSelfToIpcMain() {
+<<<<<<< Updated upstream
     if (process.env.IS_ELECTRON !== true) return false;
     let liked = store.state.liked.songs.includes(this.currentTrack.id);
     ipcRenderer?.send('player', {
+=======
+    // if (process.env.IS_ELECTRON !== true)
+    return false;
+    let liked = store.liked.songs.includes(this.currentTrack.id);
+    ipcRenderer?.send("player", {
+>>>>>>> Stashed changes
       playing: this.playing,
       likedCurrentTrack: liked,
     });

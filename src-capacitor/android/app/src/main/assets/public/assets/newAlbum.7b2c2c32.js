@@ -1,0 +1,1 @@
+import{_ as e,K as _,L as a}from"./index.458a6082.js";const n={};function t(r,s,c,o,p,l){return _(),a("span",null,"new album")}var d=e(n,[["render",t],["__scopeId","data-v-52c83048"]]);export{d as default};
