@@ -361,7 +361,7 @@ function mute() {
   <span>lyrics</span>
   <h1>{{ timer }}</h1>
   <h1>{{ date }}</h1>
-  <transition name="slide-up" v-show="false">
+  <transition name="slide-up" v-show="true">
     <div class="lyrics-page" :class="{ 'no-lyric': noLyric }" :data-theme="theme">
       <div 
         v-if="(settings.lyricsBackground === 'blur')
@@ -532,7 +532,7 @@ function mute() {
   </transition>
 </template>
 
-<!-- <style lang="scss" scoped>
+<style lang="scss" scoped>
 .lyrics-page {
   position: fixed;
   top: 0;
@@ -948,4 +948,4 @@ function mute() {
   transform: translateX(27vh);
   opacity: 0;
 }
-</style> -->
+</style>
