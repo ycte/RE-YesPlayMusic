@@ -32,6 +32,8 @@ const audioSource = computed(() => {
     ? '音源来自酷我音乐'
     : ''
 })
+
+const toggleLyrics = store.toggleLyrics
 const showToast = store.showToast
 const likeATrack = store.likeATrack
 function playPrevTrack() {
@@ -94,7 +96,7 @@ function mute() {
 </script>
 
 <template>
-  <div class="player" @click="toggleLyrics">
+  <div class="player" @click="toggleLyrics()">
     <div class="shade">
       <div
         class="progress-bar" 
@@ -126,9 +128,10 @@ function mute() {
               @click="goToAlbum"
             >
             <div class="track-info" :title="audioSource.value">
+              <!-- TODO: @click="hasList() && goToList()" -->
               <div 
                 class="name" :class="[{ 'has-list': hasList() }]" 
-                @click="hasList() && goToList()"
+                @click="toggleLyrics()"
               >
                 {{ currentTrack.name }}
               </div>
