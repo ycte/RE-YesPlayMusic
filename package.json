@@ -14,6 +14,7 @@
   "dependencies": {
     "@quasar/extras": "^1.16.4",
     "axios": "^1.5.0",
+    "color": "^4.2.3",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.10",
     "dexie": "^3.2.4",
@@ -21,6 +22,7 @@
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "node-vibrant": "3.2.1-alpha.1",
     "nprogress": "^0.2.0",
     "picocolors": "^1.0.0",
     "pinia": "^2.1.6",

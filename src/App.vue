@@ -2,19 +2,24 @@
 <!-- eslint-disable no-console -->
 <script setup>
 import { storeToRefs } from 'pinia'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import useStore from './stores/store'
 import {
   isAccountLoggedIn as AccountLoggedIn,
   isLooseLoggedIn as LooseLoggedIn,
 } from './utils/auth'
-import Player from './components/Player.vue'
+import Player from './components/PlayerBelow.vue'
 import NavBarButton from './components/NavBarBelow.vue'
+import LyricsView from './views/LyricsView.vue'
 
 const store = useStore()
 const route = useRoute()
 const { showLyrics, settings, player, enableScrolling } = storeToRefs(store)
+// TODO: debug showLyrics
+watch(showLyrics, () => {
+  console.log('> App.vue-store-showLyrics:', showLyrics.value)
+})
 const isAccountLoggedIn = computed(() => AccountLoggedIn)
 const isLooseLoggedIn = computed(() => LooseLoggedIn)
 const showPlayer = computed(() => {
@@ -45,6 +50,8 @@ const showNavbar = computed(() => route.name !== 'lastfmCallback')
 onMounted(() => {
   // TODO: Vue3 eventListener for vercel deploy
   console.log('>APP onActivated test process:', process.env)
+  console.log('>APP onActivated test showLyrics:', showLyrics.value)
+
   // console.log('>APP onActivated test player:', player.value.player.playOrPause)
   // console.log('>APP onActivated test isLogin:', isLooseLoggedIn.value, isAccountLoggedIn.value)
   window.addEventListener('keydown', handleKeydown)
@@ -93,6 +100,9 @@ function fetchData() {
   </div>
   <Player v-if="enablePlayer" v-show="showPlayer" />
   <NavBarButton v-show="showNavbar" />
+  <!-- <Transition v-show="showLyrics">
+    <LyricsView></LyricsView>
+  </Transition> -->
 </template>
 
 <style scoped>
