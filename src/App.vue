@@ -93,16 +93,14 @@ function fetchData() {
 
 <template>
   <!-- area for router-view and top-level components -->
-  
+  <LyricsView v-if="showLyrics" />
   <div id="root">
     <!-- <h1>hhhh</h1> -->
     <RouterView />
   </div>
   <Player v-if="enablePlayer" v-show="showPlayer" />
   <NavBarButton v-show="showNavbar" />
-  <!-- <Transition v-show="showLyrics">
-    <LyricsView></LyricsView>
-  </Transition> -->
+  
 </template>
 
 <style scoped>

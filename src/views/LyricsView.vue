@@ -29,6 +29,7 @@ const highlightLyricIndex = ref(-1)
 const minimize = ref(true)
 const background = ref('')
 const date = ref(formatTime(new Date()))
+const timer = ref(null)
 
 const store = useStore()
 const { player, settings, showLyrics } = storeToRefs(useStore())
@@ -183,6 +184,7 @@ function initDate() {
   clearInterval(timer.value)
   timer.value = setInterval(() => {
     date.value = formatTime(new Date())
+    // console.log(date.value)
   }, 1000)
 }
 function formatTime(value) {
@@ -357,6 +359,8 @@ function mute() {
 
 <template>
   <span>lyrics</span>
+  <h1>{{ timer }}</h1>
+  <h1>{{ date }}</h1>
   <transition name="slide-up" v-show="false">
     <div class="lyrics-page" :class="{ 'no-lyric': noLyric }" :data-theme="theme">
       <div 
@@ -439,9 +443,10 @@ function mute() {
                   <ButtonIcon :title="$t('contextMenu.addToPlaylist')" @click="addToPlaylist">
                     <svg-icon icon-class="plus" />
                   </ButtonIcon>
-                  <ButtonIcon @click="openMenu" title="Menu">
+                  TODO: open menu
+                  <!-- <ButtonIcon @click="openMenu" title="Menu">
                     <svg-icon icon-class="more" />
-                  </ButtonIcon>
+                  </ButtonIcon> -->
                 </div>
               </div>
             </div>
