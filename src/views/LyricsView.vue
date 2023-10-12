@@ -27,6 +27,7 @@ const minimize = ref(true)
 const background = ref('')
 const date = ref(formatTime(new Date()))
 
+const store = useStore()
 const { player, settings, showLyrics } = storeToRefs(useStore())
 const currentTrack = computed(() => player.value.player.currentTrack)
 const volume = computed({
@@ -35,88 +36,91 @@ const volume = computed({
   },
   set(value) {
     player.value.player.volume = value
-  }
+  },
 })
-const imageUrl = computed(
-  () => player.value.player.currentTrack?.al?.picUrl + '?param=1024y1024')
-const bgImageUrl = computed(
-  () => player.value.player.currentTrack?.al?.picUrl + '?param=512y512')
-const isShowLyricTypeSwitch = computed(
-  () => romalyric.value.length > 0 && tlyric.value.length > 0)
-const lyricToShow = computed(
-  () => lyricType.value === 'translation'
-    ? lyricWithTranslation.value
-    : lyricWithRomaPronunciation.value)
-// TODO: unref
-const lyricWithTranslation = computed(
-  () => {
-    let ret = [];
-    // 空内容的去除
-    const lyricFiltered = lyric.value.filter(({ content }) =>
-      Boolean(content)
-    );
-    // content统一转换数组形式
-    if (lyricFiltered.value.length) {
-      lyricFiltered.value.forEach(l => {
-        const { rawTime, time, content } = l;
-        const lyricItem = { time, content, contents: [content] };
-        const sameTimeTLyric = tlyric.value.find(
-          ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime
-        );
-        if (sameTimeTLyric) {
-          const { content: tLyricContent } = sameTimeTLyric;
-          if (content) {
-            lyricItem.contents.push(tLyricContent);
-          }
-        }
-        ret.push(lyricItem);
-      });
-    } else {
-      ret = lyricFiltered.map(({ time, content }) => ({
-        time,
-        content,
-        contents: [content],
-      }));
-    }
-    return ret;
-  })
-const lyricWithRomaPronunciation = computed(() => {
-  let ret = [];
+const imageUrl = computed(() => {
+  return `${player.value.player.currentTrack?.al?.picUrl}?param=1024y1024`
+})
+const bgImageUrl = computed(() => {
+  return `${player.value.player.currentTrack?.al?.picUrl}?param=512y512`
+})
+const isShowLyricTypeSwitch = computed(() => {
+  return romalyric.value.length > 0 && tlyric.value.length > 0
+})
+const lyricWithTranslation = computed(() => {
+  let ret = []
   // 空内容的去除
-  const lyricFiltered = this.lyric.filter(({ content }) =>
-    Boolean(content)
-  );
+  const lyricFiltered = lyric.value.filter(({ content }) =>
+    Boolean(content),
+  )
   // content统一转换数组形式
   if (lyricFiltered.length) {
-    lyricFiltered.forEach(l => {
-      const { rawTime, time, content } = l;
-      const lyricItem = { time, content, contents: [content] };
-      const sameTimeRomaLyric = this.romalyric.find(
-        ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime
-      );
-      if (sameTimeRomaLyric) {
-        const { content: romaLyricContent } = sameTimeRomaLyric;
-        if (content) {
-          lyricItem.contents.push(romaLyricContent);
-        }
+    lyricFiltered.forEach((l) => {
+      const { rawTime, time, content } = l
+      const lyricItem = { time, content, contents: [content] }
+      const sameTimeTLyric = tlyric.value.find(
+        ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime,
+      )
+      if (sameTimeTLyric) {
+        const { content: tLyricContent } = sameTimeTLyric
+        if (content) 
+          lyricItem.contents.push(tLyricContent)
+        
       }
-      ret.push(lyricItem);
-    });
-  } else {
+      ret.push(lyricItem)
+    })
+  }
+  else {
     ret = lyricFiltered.map(({ time, content }) => ({
       time,
       content,
       contents: [content],
-    }));
+    }))
   }
-  return ret;
+  return ret
 })
+const lyricWithRomaPronunciation = computed(() => {
+  let ret = []
+  // 空内容的去除
+  const lyricFiltered = lyric.value.filter(({ content }) =>
+    Boolean(content),
+  )
+  // content统一转换数组形式
+  if (lyricFiltered.length) {
+    lyricFiltered.forEach((l) => {
+      const { rawTime, time, content } = l
+      const lyricItem = { time, content, contents: [content] }
+      const sameTimeRomaLyric = romalyric.value.find(
+        ({ rawTime: tLyricRawTime }) => tLyricRawTime === rawTime,
+      )
+      if (sameTimeRomaLyric) {
+        const { content: romaLyricContent } = sameTimeRomaLyric
+        if (content) 
+          lyricItem.contents.push(romaLyricContent)
+        
+      }
+      ret.push(lyricItem)
+    })
+  }
+  else {
+    ret = lyricFiltered.map(({ time, content }) => ({
+      time,
+      content,
+      contents: [content],
+    }))
+  }
+  return ret
+})
+const lyricToShow = computed(
+  () => lyricType.value === 'translation'
+    ? lyricWithTranslation.value
+    : lyricWithRomaPronunciation.value)
 const lyricFontSize = computed(() => {
   return {
     fontSize: `${settings.value.lyricFontSize || 28}px`,
   }
 })
-const noLyric = computed(() => lyric.value.length == 0)
+const noLyric = computed(() => lyric.value.length === 0)
 const artist = computed(() => {
   return currentTrack.value?.ar
     ? currentTrack.value.ar[0]
@@ -131,20 +135,22 @@ watch(currentTrack, () => {
   getLyric()
   getCoverColor()
 })
-// TODO: store.commit
+
 watch(showLyrics, (show) => {
   if (show) {
     setLyricsInterval()
-    // this.$store.commit('enableScrolling', false)
-  } else {
+    store.enableScrolling = false
+  }
+  else {
     clearInterval(lyricsInterval)
-    // this.$store.commit('enableScrolling', true)
+    store.enableScrolling = true
   }
 })
 
 // TODO: 生命周期
+// TODO: timer
 onMounted(() => {
-  getLyric()
+  getTheLyric()
   getCoverColor()
   initDate()
 })
@@ -164,176 +170,187 @@ unmounted(() => {
 //   clearInterval(this.lyricsInterval);
 // },
 
-const store = useStore()
+
 const toggleLyrics = store.toggleLyrics
 const updateModal = store.updateModal
 const likeATrack = store.likeATrack
+// TODO: this
 function initDate() {
-  var _this = this;
+  // var _this = this;
   clearInterval(timer.value)
-  timer.value = setInterval(function () {
-    date.value = _this.formatTime(new Date());
+  timer.value = setInterval(() => {
+    date.value = formatTime(new Date())
   }, 1000)
 }
 function formatTime(value) {
-  let hour = value.getHours().toString();
-  let minute = value.getMinutes().toString();
-  let second = value.getSeconds().toString();
+  const hour = value.getHours().toString()
+  const minute = value.getMinutes().toString()
+  const second = value.getSeconds().toString()
   return (
-    hour.padStart(2, '0') +
-    ':' +
-    minute.padStart(2, '0') +
-    ':' +
-    second.padStart(2, '0')
-  );
+    `${hour.padStart(2, '0') 
+    }:${ 
+    minute.padStart(2, '0') 
+    }:${ 
+    second.padStart(2, '0')}`
+  )
 }
 function addToPlaylist() {
   if (!isAccountLoggedIn()) {
-    this.showToast(locale.t('toast.needToLogin'));
-    return;
+    showToast(locale.t('toast.needToLogin'))
+    return
   }
-  this.$store.dispatch('fetchLikedPlaylist');
-  this.updateModal({
+  store.fetchLikedPlaylist()
+  updateModal({
     modalName: 'addTrackToPlaylistModal',
     key: 'show',
     value: true,
-  });
-  this.updateModal({
+  })
+  updateModal({
     modalName: 'addTrackToPlaylistModal',
     key: 'selectedTrackID',
-    value: this.currentTrack?.id,
-  });
+    value: currentTrack.value?.id,
+  })
 }
 function playPrevTrack() {
-  this.player.playPrevTrack();
+  player.value.player.playPrevTrack()
 }
 function playOrPause() {
-  this.player.playOrPause();
+  player.value.player.playOrPause()
 }
 function playNextTrack() {
-  if (this.player.isPersonalFM) {
-    this.player.playNextFMTrack();
-  } else {
-    this.player.playNextTrack();
-  }
+  if (player.value.player.isPersonalFM)
+    player.value.player.playNextFMTrack()
+  else 
+    player.value.player.playNextTrack()
+  
 }
-function getLyric() {
-  if (!this.currentTrack.id) return;
-  return getLyric(this.currentTrack.id).then(data => {
+
+function getTheLyric() {
+  if (!currentTrack.value.id)
+    return
+  return getLyric(currentTrack.value.id).then((data) => {
     if (!data?.lrc?.lyric) {
-      this.lyric = [];
-      this.tlyric = [];
-      this.romalyric = [];
-      return false;
-    } else {
-      let { lyric, tlyric, romalyric } = lyricParser(data);
-      lyric = lyric.filter(
-        l => !/^作(词|曲)\s*(:|：)\s*无$/.exec(l.content)
-      );
-      let includeAM =
-        lyric.length <= 10 &&
-        lyric.map(l => l.content).includes('纯音乐，请欣赏');
+      lyric.value = []
+      tlyric.value = []
+      romalyric.value = []
+      return false
+    }
+    else {
+      let { lyric: lyric1, tlyric: tlyric1, romalyric: romalyric1 }
+        = lyricParser(data)
+      lyric1 = lyric1.filter(
+        l => !/^作(词|曲)\s*(:|：)\s*无$/.exec(l.content),
+      )
+      const includeAM =
+        lyric1.length <= 10 &&
+        lyric1.map(l => l.content).includes('纯音乐，请欣赏')
       if (includeAM) {
-        let reg = /^作(词|曲)\s*(:|：)\s*/;
-        let author = this.currentTrack?.ar[0]?.name;
-        lyric = lyric.filter(l => {
-          let regExpArr = l.content.match(reg);
+        const reg = /^作(词|曲)\s*(:|：)\s*/
+        const author = currentTrack.value?.ar[0]?.name
+        lyric1 = lyric1.filter((l) => {
+          const regExpArr = l.content.match(reg)
           return (
             !regExpArr || l.content.replace(regExpArr[0], '') !== author
-          );
-        });
+          )
+        })
       }
-      if (lyric.length === 1 && includeAM) {
-        this.lyric = [];
-        this.tlyric = [];
-        this.romalyric = [];
-        return false;
-      } else {
-        this.lyric = lyric;
-        this.tlyric = tlyric;
-        this.romalyric = romalyric;
-        if (tlyric.length * romalyric.length > 0) {
-          this.lyricType = 'translation';
-        } else {
-          this.lyricType =
-            lyric.length > 0 ? 'translation' : 'romaPronunciation';
+      if (lyric1 === 1 && includeAM) {
+        lyric.value = []
+        tlyric.value = []
+        romalyric.value = []
+        return false
+      }
+      else {
+        lyric.value = lyric1
+        tlyric.value = tlyric1
+        romalyric.value = romalyric1
+        if (tlyric.value.length * romalyric.value.length > 0) {
+          lyricType.value = 'translation'
         }
-        return true;
+        else {
+          lyricType.value =
+            lyric.value.length > 0 ? 'translation' : 'romaPronunciation'
+        }
+        return true
       }
     }
-  });
+  })
 }
 function switchLyricType() {
-  this.lyricType =
-    this.lyricType === 'translation' ? 'romaPronunciation' : 'translation';
+  lyricType.value =
+    lyricType.value === 'translation'
+      ? 'romaPronunciation' : 'translation'
 }
-function formatTrackTime(value) {
-  return formatTrackTime(value);
+function formatTrackTimeFun(value) {
+  return formatTrackTime(value)
 }
 function clickLyricLine(value, startPlay = false) {
   // TODO: 双击选择还会选中文字，考虑搞个右键菜单复制歌词
-  let jumpFlag = false;
-  this.lyric.filter(function (item) {
-    if (item.content == '纯音乐，请欣赏') {
-      jumpFlag = true;
-    }
-  });
-  if (window.getSelection().toString().length === 0 && !jumpFlag) {
-    this.player.seek(value);
-  }
-  if (startPlay === true) {
-    this.player.play();
-  }
+  let jumpFlag = false
+  lyric.value.filter((item) => {
+    if (item.content === '纯音乐，请欣赏') 
+      jumpFlag = true
+    return undefined
+  })
+  if (window.getSelection().toString().length === 0 && !jumpFlag) 
+    player.value.player.seek(value)
+  
+  if (startPlay === true) 
+    player.value.player.play()
+  
 }
 function setLyricsInterval() {
-  this.lyricsInterval = setInterval(() => {
-    const progress = this.player.seek(null, false) ?? 0;
-    let oldHighlightLyricIndex = this.highlightLyricIndex;
-    this.highlightLyricIndex = this.lyric.findIndex((l, index) => {
-      const nextLyric = this.lyric[index + 1];
+  lyricsInterval.value = setInterval(() => {
+    const progress = player.value.player.seek(null, false) ?? 0
+    const oldHighlightLyricIndex = highlightLyricIndex.value
+    highlightLyricIndex.value = lyric.value.findIndex((l, index) => {
+      const nextLyric = lyric.value[index + 1]
       return (
         progress >= l.time && (nextLyric ? progress < nextLyric.time : true)
-      );
-    });
-    if (oldHighlightLyricIndex !== this.highlightLyricIndex) {
-      const el = document.getElementById(`line${this.highlightLyricIndex}`);
-      if (el)
+      )
+    })
+    if (oldHighlightLyricIndex !== highlightLyricIndex.value) {
+      const el = document.getElementById(`line${highlightLyricIndex.value}`);
+      if (el) {
         el.scrollIntoView({
           behavior: 'smooth',
           block: 'center',
-        });
+        })
+      }
     }
-  }, 50);
+  }, 50)
 }
 function moveToFMTrash() {
-  this.player.moveToFMTrash();
+  player.value.player.moveToFMTrash()
 }
 function switchRepeatMode() {
-  this.player.switchRepeatMode();
+  player.value.player.switchRepeatMode()
 }
 function switchShuffle() {
-  this.player.switchShuffle();
+  player.value.switchShuffle()
 }
 function getCoverColor() {
-  if (this.settings.lyricsBackground !== true) return;
-  const cover = this.currentTrack.al?.picUrl + '?param=256y256';
+  if (settings.value.lyricsBackground !== true)
+    return
+  const cover = `${currentTrack.value.al?.picUrl  }?param=256y256`
   Vibrant.from(cover, { colorCount: 1 })
     .getPalette()
-    .then(palette => {
-      const originColor = Color.rgb(palette.DarkMuted._rgb);
-      const color = originColor.darken(0.1).rgb().string();
-      const color2 = originColor.lighten(0.28).rotate(-30).rgb().string();
-      this.background = `linear-gradient(to top left, ${color}, ${color2})`;
-    });
+    .then((palette) => {
+      const originColor = Color.rgb(palette.DarkMuted._rgb)
+      const color = originColor.darken(0.1).rgb().string()
+      const color2 = originColor.lighten(0.28).rotate(-30).rgb().string()
+      background.value =
+        `linear-gradient(to top left, ${color}, ${color2})`
+    })
 }
 function hasList() {
-  return hasListSource();
+  return hasListSource()
 }
 function getListPath() {
-  return getListSourcePath();
+  return getListSourcePath()
 }
 function mute() {
-  this.player.mute();
+  player.value.player.mute()
 }
 </script>
 
@@ -413,13 +430,13 @@ function mute() {
               </div>
             </div>
             <div class="progress-bar">
-              <span>{{ formatTrackTime(player.progress) || '0:00' }}</span>
+              <span>{{ formatTrackTimeFun(player.progress) || '0:00' }}</span>
               <div class="slider">
                 <vue-slider v-model="player.progress" :min="0" :max="player.currentTrackDuration" :interval="1"
-                  :drag-on-click="true" :duration="0" :dot-size="12" :height="2" :tooltip-formatter="formatTrackTime"
+                  :drag-on-click="true" :duration="0" :dot-size="12" :height="2" :tooltip-formatter="formatTrackTimeFun"
                   :lazy="true" :silent="true"></vue-slider>
               </div>
-              <span>{{ formatTrackTime(player.currentTrackDuration) }}</span>
+              <span>{{ formatTrackTimeFun(player.currentTrackDuration) }}</span>
             </div>
             <div class="media-controls">
               <button-icon v-show="!player.isPersonalFM" :title="player.repeatMode === 'one'
