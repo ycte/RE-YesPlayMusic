@@ -371,7 +371,7 @@ function mute() {
         <div class="top-right" :style="{ backgroundImage: `url(${bgImageUrl})` }" />
         <div class="bottom-left" :style="{ backgroundImage: `url(${bgImageUrl})` }" />
       </div> -->
-      <div v-if="settings.lyricsBackground === true" class="gradient-background" :style="{ background }" />
+      <!-- <div v-if="settings.lyricsBackground === true" class="gradient-background" :style="{ background }" /> -->
 
       <div class="left-side">
         <div>
@@ -379,7 +379,7 @@ function mute() {
             {{ date }}
           </div> -->
           <div class="cover">
-            <Starport port="cover-song" style="width:54vh; height:54vh">
+            <Starport port="cover-song" >
               <div id="lyrics-cover" class="cover-container">
                 <img :src="imageUrl" loading="lazy">
                 <div class="shadow" :style="{ backgroundImage: `url(${imageUrl})` }" />
@@ -522,15 +522,15 @@ function mute() {
 <style lang="scss" scoped>
 .lyrics-page {
   position: fixed;
-  width: 100%;
+  width: 100vh;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
   z-index: 200;
   background: var(--color-body-bg);
-  display: flex;
-  clip: rect(auto, auto, auto, auto);
+  // display: flex;
+  // clip: rect(auto, auto, auto, auto);
 }
 
 .lyrics-background {
@@ -589,180 +589,188 @@ function mute() {
 
 .gradient-background {
   position: absolute;
-  height: 100vh;
-  width: 100vw;
+  height: 50vh;
+  width: 50vw;
 }
 
 .left-side {
   // flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  margin-left: 32px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content:center;
+  // margin-left: 32px;
   margin-right: 32px;
   margin-top: 24px;
-  align-items: center;
+  // align-items: center;
   // transition: all 0.5s;
 
-  z-index: 1;
+  z-index: 1000;
 
-  .date {
-    max-width: 54vh;
-    margin: 24px 0;
-    color: var(--color-text);
-    text-align: center;
-    font-size: 4rem;
-    font-weight: 600;
-    opacity: 0.88;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-  }
+  // .date {
+  //   max-width: 54vh;
+  //   margin: 24px 0;
+  //   color: var(--color-text);
+  //   text-align: center;
+  //   font-size: 4rem;
+  //   font-weight: 600;
+  //   opacity: 0.88;
+  //   display: -webkit-box;
+  //   -webkit-box-orient: vertical;
+  //   -webkit-line-clamp: 1;
+  //   overflow: hidden;
+  // }
 
-  .controls {
-    max-width: 54vh;
-    margin-top: 24px;
-    color: var(--color-text);
+  // .controls {
+  //   max-width: 54vh;
+  //   margin-top: 24px;
+  //   color: var(--color-text);
 
-    .title {
-      margin-top: 8px;
-      font-size: 1.4rem;
-      font-weight: 600;
-      opacity: 0.88;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
-      overflow: hidden;
-    }
+  //   .title {
+  //     margin-top: 8px;
+  //     font-size: 1.4rem;
+  //     font-weight: 600;
+  //     opacity: 0.88;
+  //     display: -webkit-box;
+  //     -webkit-box-orient: vertical;
+  //     -webkit-line-clamp: 1;
+  //     overflow: hidden;
+  //   }
 
-    .subtitle {
-      margin-top: 4px;
-      font-size: 1rem;
-      opacity: 0.58;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
-      overflow: hidden;
-    }
+  //   .subtitle {
+  //     margin-top: 4px;
+  //     font-size: 1rem;
+  //     opacity: 0.58;
+  //     display: -webkit-box;
+  //     -webkit-box-orient: vertical;
+  //     -webkit-line-clamp: 1;
+  //     overflow: hidden;
+  //   }
 
-    .top-part {
-      display: flex;
-      justify-content: space-between;
+  //   .top-part {
+  //     display: flex;
+  //     justify-content: space-between;
 
-      .top-right {
-        display: flex;
-        justify-content: space-between;
+  //     .top-right {
+  //       display: flex;
+  //       justify-content: space-between;
 
-        .volume-control {
-          margin: 0 10px;
-          display: flex;
-          align-items: center;
+  //       .volume-control {
+  //         margin: 0 10px;
+  //         display: flex;
+  //         align-items: center;
 
-          .volume-bar {
-            width: 84px;
-          }
-        }
+  //         .volume-bar {
+  //           width: 84px;
+  //         }
+  //       }
 
-        .buttons {
-          display: flex;
-          align-items: center;
+  //       .buttons {
+  //         display: flex;
+  //         align-items: center;
 
-          button {
-            margin: 0 0 0 4px;
-          }
+  //         button {
+  //           margin: 0 0 0 4px;
+  //         }
 
-          .svg-icon {
-            height: 18px;
-            width: 18px;
-          }
-        }
-      }
-    }
+  //         .svg-icon {
+  //           height: 18px;
+  //           width: 18px;
+  //         }
+  //       }
+  //     }
+  //   }
 
-    .progress-bar {
-      margin-top: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+  //   .progress-bar {
+  //     margin-top: 22px;
+  //     display: flex;
+  //     align-items: center;
+  //     justify-content: space-between;
 
-      .slider {
-        width: 100%;
-        flex-grow: grow;
-        padding: 0 10px;
-      }
+  //     .slider {
+  //       width: 100%;
+  //       flex-grow: grow;
+  //       padding: 0 10px;
+  //     }
 
-      span {
-        font-size: 15px;
-        opacity: 0.58;
-        min-width: 28px;
-      }
-    }
+  //     span {
+  //       font-size: 15px;
+  //       opacity: 0.58;
+  //       min-width: 28px;
+  //     }
+  //   }
 
-    .media-controls {
-      display: flex;
-      justify-content: center;
-      margin-top: 18px;
-      align-items: center;
+  //   .media-controls {
+  //     display: flex;
+  //     justify-content: center;
+  //     margin-top: 18px;
+  //     align-items: center;
 
-      button {
-        margin: 0;
-      }
+  //     button {
+  //       margin: 0;
+  //     }
 
-      .svg-icon {
-        opacity: 0.38;
-        height: 14px;
-        width: 14px;
-      }
+  //     .svg-icon {
+  //       opacity: 0.38;
+  //       height: 14px;
+  //       width: 14px;
+  //     }
 
-      .active .svg-icon {
-        opacity: 0.88;
-      }
+  //     .active .svg-icon {
+  //       opacity: 0.88;
+  //     }
 
-      .middle {
-        padding: 0 16px;
-        display: flex;
-        align-items: center;
+  //     .middle {
+  //       padding: 0 16px;
+  //       display: flex;
+  //       align-items: center;
 
-        button {
-          margin: 0 8px;
-        }
+  //       button {
+  //         margin: 0 8px;
+  //       }
 
-        button#play .svg-icon {
-          height: 28px;
-          width: 28px;
-          padding: 2px;
-        }
+  //       button#play .svg-icon {
+  //         height: 28px;
+  //         width: 28px;
+  //         padding: 2px;
+  //       }
 
-        .svg-icon {
-          opacity: 0.88;
-          height: 22px;
-          width: 22px;
-        }
-      }
+  //       .svg-icon {
+  //         opacity: 0.88;
+  //         height: 22px;
+  //         width: 22px;
+  //       }
+  //     }
 
-      .lyric-switch-icon {
-        color: var(--color-text);
-        font-size: 14px;
-        line-height: 14px;
-        opacity: 0.88;
-      }
-    }
-  }
+  //     .lyric-switch-icon {
+  //       color: var(--color-text);
+  //       font-size: 14px;
+  //       line-height: 14px;
+  //       opacity: 0.88;
+  //     }
+  //   }
+  // }
 }
 
 .cover {
-  position: relative;
+  // position: relative;
+  margin-right: 0px;
+
 
   .cover-container {
-    position: relative;
+    // position: relative;
+    margin-right: 0px;
   }
 
   img {
     border-radius: 0.75em;
     width: 54vh;
-    height: 54vh;
+    height: width;
     user-select: none;
-    object-fit: cover;
+    // object-fit: cover;
   }
 
   .shadow {
@@ -772,7 +780,7 @@ function mute() {
     width: 54vh;
     filter: blur(16px) opacity(0.6);
     transform: scale(0.92, 0.96);
-    z-index: -1;
+    // z-index: -1;
     background-size: cover;
     border-radius: 0.75em;
   }
