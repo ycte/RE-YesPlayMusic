@@ -100,9 +100,8 @@ function fetchData() {
     <RouterView />
   </div>
   <StarportCarrier>
-    <Transition>
-      <LyricsView v-if="showLyrics" />
-    </Transition>
+    <LyricsView v-if="showLyrics" />
+    <!--  -->
     <Player v-if="enablePlayer" v-show="showPlayer" />
   </StarportCarrier>
   <NavBarButton v-show="showNavbar" />

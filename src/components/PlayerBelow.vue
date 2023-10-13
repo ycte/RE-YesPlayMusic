@@ -14,7 +14,7 @@ import SvgIcon from './SvgIcon.vue'
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
-const { player, settings, data } = storeToRefs(useStore())
+const { player, settings, data, showLyrics } = storeToRefs(useStore())
 // console.log('>storeToRefs test:', player.value.player, settings.value)
 const currentTrack = computed(() => player.value.player.currentTrack)
 // console.log('>currentTrack test:', currentTrack.value)
@@ -123,6 +123,13 @@ function mute() {
             <Starport port="cover-song">
               <img :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" @click="goToAlbum">
             </Starport>
+            <Teleport to="body">
+              <Transition>
+                <img 
+                  v-if="showLyrics"
+                  :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" @click="goToAlbum">
+              </Transition> 
+            </Teleport>
             <div class="track-info" :title="audioSource.value">
               <!-- TODO: @click="hasList() && goToList()" -->
               <div class="name" :class="[{ 'has-list': hasList() }]" @click="toggleLyrics()">
