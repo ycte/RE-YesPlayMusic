@@ -4,6 +4,7 @@
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { StarportCarrier } from 'vue-starport'
 import useStore from './stores/store'
 import {
   isAccountLoggedIn as AccountLoggedIn,
@@ -43,7 +44,7 @@ const enablePlayer = computed(() => {
   // return (
   //   this.player.player.enabled && route.name !== "lastfmCallback"
   // )
-  return true
+  return !showLyrics.value
 })
 const showNavbar = computed(() => route.name !== 'lastfmCallback')
 
@@ -93,19 +94,39 @@ function fetchData() {
 
 <template>
   <!-- area for router-view and top-level components -->
-  <LyricsView v-if="showLyrics" />
+
   <div id="root">
     <!-- <h1>hhhh</h1> -->
     <RouterView />
   </div>
-  <Player v-if="enablePlayer" v-show="showPlayer" />
+  <StarportCarrier>
+    <Transition>
+      <LyricsView v-if="showLyrics" />
+    </Transition>
+    <Player v-if="enablePlayer" v-show="showPlayer" />
+  </StarportCarrier>
   <NavBarButton v-show="showNavbar" />
-  
 </template>
 
 <style scoped>
+.v-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from {
+  opacity: 0;
+}
+
+.v-leave-to {
+  opacity: 0;
+}
+
 #root {
-  
+
   margin-left: -32px;
   margin-right: -32px;
   margin-top: -32px;
@@ -123,6 +144,7 @@ function fetchData() {
   margin-left: -10%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
+
 a {
   /* //去掉下换线 */
   text-decoration: none;
@@ -130,9 +152,11 @@ a {
   /* //文字颜色更改 */
   color: black;
 }
+
 .router-link-exact-active {
   color: black;
 }
+
 .router-link-active {
   color: black;
 }
