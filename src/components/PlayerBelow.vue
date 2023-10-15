@@ -120,16 +120,14 @@ function mute() {
       <div class="controls">
         <div class="playing">
           <div class="container" @click.stop>
-            <Starport port="cover-song">
-              <img :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" @click="goToAlbum">
+            <Starport port="cover-song" style="height:46px; width: 46px;">
+              <img :src="currentTrack.al && currentTrack.al.picUrl" @click="goToAlbum">
             </Starport>
-            <Teleport to="body">
-              <Transition>
-                <img 
-                  v-if="showLyrics"
-                  :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" @click="goToAlbum">
-              </Transition> 
-            </Teleport>
+
+
+            <!-- <img v-if="showLyrics" :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" @click="goToAlbum"> -->
+
+
             <div class="track-info" :title="audioSource.value">
               <!-- TODO: @click="hasList() && goToList()" -->
               <div class="name" :class="[{ 'has-list': hasList() }]" @click="toggleLyrics()">
@@ -200,13 +198,12 @@ function mute() {
   justify-content: space-around;
   height: 60px;
   backdrop-filter: saturate(180%) blur(30px);
-  background-color: rgba(255, 255, 255, 0.97);
+  background-color: rgba(255, 255, 255, 0.87);
   // background-color: var(--color-navbar-bg);
   border-radius: 15px;
   margin-left: 3%;
   margin-right: 3%;
   margin-bottom: 56px;
-  z-index: 100;
 }
 
 @supports (-moz-appearance: none) {

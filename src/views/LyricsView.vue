@@ -364,31 +364,29 @@ function mute() {
   <!-- <h1>{{ timer }}</h1>
   <h1>{{ date }}</h1> -->
   <!-- <transition name="slide-up" v-show="true"> -->
-    <div class="lyrics-page" :class="{ 'no-lyric': noLyric }" :data-theme="theme">
-      <!-- <div v-if="(settings.lyricsBackground === 'blur')
+  <div class="lyrics-page" :class="{ 'no-lyric': noLyric }" :data-theme="theme">
+    <!-- <div v-if="(settings.lyricsBackground === 'blur')
         | (settings.lyricsBackground === 'dynamic')" class="lyrics-background"
         :class="{ 'dynamic-background': settings.lyricsBackground === 'dynamic' }">
         <div class="top-right" :style="{ backgroundImage: `url(${bgImageUrl})` }" />
         <div class="bottom-left" :style="{ backgroundImage: `url(${bgImageUrl})` }" />
       </div> -->
-      <div v-if="settings.lyricsBackground === true" class="gradient-background" :style="{ background }" />
+    <div v-if="settings.lyricsBackground === true" class="gradient-background" :style="{ background }" />
 
-      <!-- <div class="left-side">
+    <!-- <div class="left-side">
         <div> -->
-      <!-- <div v-if="settings.showLyricsTime" class="date">
+    <!-- <div v-if="settings.showLyricsTime" class="date">
             {{ date }}
           </div> -->
-      <div class="cover">
-        <Starport 
-          port="cover-song" 
-          style="position: relative; width:100vw;height:100vh">
-        <div id="lyrics-cover" class="cover-container">
-          <img :src="imageUrl" loading="lazy">
-          <div class="shadow" :style="{ backgroundImage: `url(${imageUrl})` }" />
-        </div>
+    <div class="cover">
+      <div id="lyrics-cover" class="cover-container">
+        <Starport port="cover-song" style="width:100px;height:100px">
+          <img :src="imageUrl">
         </Starport>
+        <div class="shadow" :style="{ backgroundImage: `url(${imageUrl})` }" />
       </div>
-      <!-- <div class="controls">
+    </div>
+    <!-- <div class="controls">
             <div class="top-part">
               <div class="track-info">
                 <div class="title" :title="currentTrack.name">
@@ -492,9 +490,9 @@ function mute() {
               </ButtonIcon>
             </div>
           </div> -->
-      <!-- </div> -->
-      <!-- </div> -->
-      <!-- <div class="right-side">
+    <!-- </div> -->
+    <!-- </div> -->
+    <!-- <div class="right-side">
         <transition name="slide-fade">
           <div v-show="!noLyric" ref="lyricsContainer" class="lyrics-container" :style="lyricFontSize">
             <div id="line-1" class="line"></div>
@@ -512,12 +510,12 @@ function mute() {
           </div>
         </transition>
       </div> -->
-      <div class="close-button" @click="toggleLyrics">
-        <button>
-          <svg-icon icon-class="arrow-down" />
-        </button>
-      </div>
+    <div class="close-button" @click="toggleLyrics">
+      <button>
+        <svg-icon icon-class="arrow-down" />
+      </button>
     </div>
+  </div>
   <!-- </transition> -->
 </template>
 
@@ -530,6 +528,7 @@ function mute() {
   left: 0;
   bottom: 0;
   z-index: 200;
+  text-align: center;
   background: var(--color-body-bg);
   // display: flex;
   // clip: rect(auto, auto, auto, auto);

@@ -13,6 +13,7 @@ import {
 import Player from './components/PlayerBelow.vue'
 import NavBarButton from './components/NavBarBelow.vue'
 import LyricsView from './views/LyricsView.vue'
+import 'animate.css'
 
 const store = useStore()
 const route = useRoute()
@@ -100,11 +101,15 @@ function fetchData() {
     <RouterView />
   </div>
   <StarportCarrier>
-    <LyricsView v-if="showLyrics" />
-    <!--  -->
-    <Player v-if="enablePlayer" v-show="showPlayer" />
+    <div class="animate__animated animate__fadeIn" style="z-index: 100;">
+      <LyricsView 
+        v-if="showLyrics" style="z-index: 50;" 
+      />
+      <!--  -->
+      <Player v-if="!showLyrics" style="z-index: 100;" />
+    </div>
   </StarportCarrier>
-  <NavBarButton v-show="showNavbar" />
+  <NavBarButton v-show="showNavbar" style="z-index: 0;" />
 </template>
 
 <style scoped>
