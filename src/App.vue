@@ -100,16 +100,16 @@ function fetchData() {
     <!-- <h1>hhhh</h1> -->
     <RouterView />
   </div>
-  <StarportCarrier>
-    <div class="animate__animated animate__fadeIn" style="z-index: 100;">
+  <NavBarButton v-show="showNavbar" style="z-index: -1;" />
+  <StarportCarrier style="z-index: 50;">
+    <div class="animate__animated animate__fadeIn">
       <LyricsView 
         v-if="showLyrics" style="z-index: 50;" 
       />
       <!--  -->
-      <Player v-if="!showLyrics" style="z-index: 100;" />
+      <Player v-if="!showLyrics" style="z-index: 50;" />
     </div>
-  </StarportCarrier>
-  <NavBarButton v-show="showNavbar" style="z-index: 0;" />
+  </StarportCarrier> 
 </template>
 
 <style scoped>
