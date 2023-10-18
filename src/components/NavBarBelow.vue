@@ -65,11 +65,11 @@ import SvgIcon from './SvgIcon.vue'
 <style>
 .navigation-player {
   position: fixed;
-  bottom: 55px;
+  /* bottom: 55px; */
   left: 0;
   right: 0;
   width: 100%;
-  height: 50px;
+  height: 55px;
   backdrop-filter: saturate(180%) blur(30px);
   background-color: var(--color-navbar-bg);
   background-color: rgba(255, 255, 255, 0.81);
@@ -87,7 +87,7 @@ import SvgIcon from './SvgIcon.vue'
   /* justify-content: space-around; */
   backdrop-filter: saturate(1000%) contrast(77%) blur(300px);
   /* background-color: var(--color-navbar-bg); */
-  background-color: rgba(255, 255, 255, 0.87);
+  background-color: rgba(255, 255, 255, 0.99);
   /* border-radius: 12px; */
 
   /* height: 100px; */

@@ -4,6 +4,7 @@
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, watch } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { StarportCarrier } from 'vue-starport'
 import useStore from './stores/store'
 import {
   isAccountLoggedIn as AccountLoggedIn,
@@ -12,6 +13,7 @@ import {
 import Player from './components/PlayerBelow.vue'
 import NavBarButton from './components/NavBarBelow.vue'
 import LyricsView from './views/LyricsView.vue'
+import 'animate.css'
 
 const store = useStore()
 const route = useRoute()
@@ -43,7 +45,7 @@ const enablePlayer = computed(() => {
   // return (
   //   this.player.player.enabled && route.name !== "lastfmCallback"
   // )
-  return true
+  return !showLyrics.value
 })
 const showNavbar = computed(() => route.name !== 'lastfmCallback')
 
@@ -93,19 +95,42 @@ function fetchData() {
 
 <template>
   <!-- area for router-view and top-level components -->
-  <LyricsView v-if="showLyrics" />
+
   <div id="root">
     <!-- <h1>hhhh</h1> -->
     <RouterView />
   </div>
-  <Player v-if="enablePlayer" v-show="showPlayer" />
-  <NavBarButton v-show="showNavbar" />
-  
+  <NavBarButton v-show="showNavbar" style="z-index: -1;" />
+  <StarportCarrier style="z-index: 50;">
+    <div class="animate__animated animate__fadeIn">
+      <LyricsView 
+        v-if="showLyrics" style="z-index: 50;" 
+      />
+      <!--  -->
+      <Player v-if="!showLyrics" style="z-index: 50;" />
+    </div>
+  </StarportCarrier> 
 </template>
 
 <style scoped>
+.v-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from {
+  opacity: 0;
+}
+
+.v-leave-to {
+  opacity: 0;
+}
+
 #root {
-  
+
   margin-left: -32px;
   margin-right: -32px;
   margin-top: -32px;
@@ -123,6 +148,7 @@ function fetchData() {
   margin-left: -10%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
+
 a {
   /* //去掉下换线 */
   text-decoration: none;
@@ -130,9 +156,11 @@ a {
   /* //文字颜色更改 */
   color: black;
 }
+
 .router-link-exact-active {
   color: black;
 }
+
 .router-link-active {
   color: black;
 }

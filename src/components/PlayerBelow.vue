@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Starport } from 'vue-starport'
 import useStore from 'src/stores/store'
 import ButtonIcon from 'src/components/ButtonIcon.vue'
 import { goToListSource, hasListSource } from 'src/utils/playList'
@@ -13,7 +14,7 @@ import SvgIcon from './SvgIcon.vue'
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
-const { player, settings, data } = storeToRefs(useStore())
+const { player, settings, data, showLyrics } = storeToRefs(useStore())
 // console.log('>storeToRefs test:', player.value.player, settings.value)
 const currentTrack = computed(() => player.value.player.currentTrack)
 // console.log('>currentTrack test:', currentTrack.value)
@@ -48,11 +49,11 @@ function playOrPause() {
   player.value.player.playOrPause()
 }
 function playNextTrack() {
-  if (player.value.player.isPersonalFM) 
+  if (player.value.player.isPersonalFM)
     player.value.player.playNextFMTrack()
-  else 
+  else
     player.value.player.playNextTrack()
-  
+
 }
 
 function goToNextTracksPage() {
@@ -98,14 +99,10 @@ function mute() {
 <template>
   <div class="player" @click="toggleLyrics()">
     <div class="shade">
-      <div
-        class="progress-bar" 
-        :class="{
-          'nyancat': settings.nyancatStyle,
-          'nyancat-stop': settings.nyancatStyle && !player.playing,
-        }" 
-        @click.stop
-      >
+      <div class="progress-bar" :class="{
+        'nyancat': settings.nyancatStyle,
+        'nyancat-stop': settings.nyancatStyle && !player.playing,
+      }" @click.stop>
         <!-- <vue-slider
         v-model="player.progress"
         :min="0"
@@ -123,23 +120,21 @@ function mute() {
       <div class="controls">
         <div class="playing">
           <div class="container" @click.stop>
-            <img 
-              :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" 
-              @click="goToAlbum"
-            >
+            <Starport port="cover-song" style="height:46px; width: 46px;">
+              <img :src="currentTrack.al && currentTrack.al.picUrl" @click="goToAlbum">
+            </Starport>
+
+
+            <!-- <img v-if="showLyrics" :src="currentTrack.al && currentTrack.al.picUrl" loading="lazy" @click="goToAlbum"> -->
+
+
             <div class="track-info" :title="audioSource.value">
               <!-- TODO: @click="hasList() && goToList()" -->
-              <div 
-                class="name" :class="[{ 'has-list': hasList() }]" 
-                @click="toggleLyrics()"
-              >
+              <div class="name" :class="[{ 'has-list': hasList() }]" @click="toggleLyrics()">
                 {{ currentTrack.name }}
               </div>
               <div class="artist">
-                <span 
-                  v-for="(ar, index) in currentTrack.ar" :key="ar.id" 
-                  @click="ar.id && goToArtist(ar.id)"
-                >
+                <span v-for="(ar, index) in currentTrack.ar" :key="ar.id" @click="ar.id && goToArtist(ar.id)">
                   <span :class="{ ar: ar.id }"> {{ ar.name }} </span>
                   <span v-if="index !== currentTrack.ar.length - 1">,
                   </span>
@@ -147,20 +142,12 @@ function mute() {
               </div>
             </div>
             <div class="like-button">
-              <ButtonIcon 
-                :title="player.player.isCurrentTrackLiked
-                  ? $t('player.unlike')
-                  : $t('player.like')
-                " @click="likeATrack(player.player.currentTrack.id)"
-              >
-                <SvgIcon 
-                  v-show="!player.player.isCurrentTrackLiked" 
-                  name="heart" 
-                />
-                <SvgIcon 
-                  v-show="player.player.isCurrentTrackLiked" 
-                  name="heart-solid" 
-                />
+              <ButtonIcon :title="player.player.isCurrentTrackLiked
+                ? $t('player.unlike')
+                : $t('player.like')
+                " @click="likeATrack(player.player.currentTrack.id)">
+                <SvgIcon v-show="!player.player.isCurrentTrackLiked" name="heart" />
+                <SvgIcon v-show="player.player.isCurrentTrackLiked" name="heart-solid" />
               </ButtonIcon>
             </div>
           </div>
@@ -183,19 +170,10 @@ function mute() {
             @click="moveToFMTrash"
             ><svg-icon icon-class="thumbs-down"
           /></button-icon> -->
-            <ButtonIcon 
-              class="play" 
-              :title="$t(player.player.playing ? 'player.pause' : 'player.play')" 
-              @click="playOrPause" 
-            >
-              <SvgIcon 
-                v-show="player.player.playing" name="pause" 
-                class="svg-icon" 
-              />
-              <SvgIcon 
-                v-show="!player.player.playing" 
-                name="play" class="svg-icon" 
-              />
+            <ButtonIcon class="play" :title="$t(player.player.playing ? 'player.pause' : 'player.play')"
+              @click="playOrPause">
+              <SvgIcon v-show="player.player.playing" name="pause" class="svg-icon" />
+              <SvgIcon v-show="!player.player.playing" name="play" class="svg-icon" />
             </ButtonIcon>
             <ButtonIcon :title="$t('player.next')" @click="playNextTrack">
               <SvgIcon name="forward" class="svg-icon" />
@@ -220,13 +198,12 @@ function mute() {
   justify-content: space-around;
   height: 60px;
   backdrop-filter: saturate(180%) blur(30px);
-  background-color: rgba(255, 255, 255, 0.97);
+  background-color: rgba(255, 255, 255, 0.87);
   // background-color: var(--color-navbar-bg);
   border-radius: 15px;
   margin-left: 3%;
   margin-right: 3%;
   margin-bottom: 56px;
-  z-index: 100;
 }
 
 @supports (-moz-appearance: none) {
